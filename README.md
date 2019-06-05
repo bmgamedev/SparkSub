@@ -1,1 +1,1 @@
-# SparkSub
+# Spark Submarine Game Interface
