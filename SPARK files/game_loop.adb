@@ -5,7 +5,7 @@ package body Game_Loop is
 
    function OpenInteriorDoor return CSharp_Bool is
    begin
-      return CSharp_Bool (CloseInner);
+      return CSharp_Bool (CloseInner); -- Need to rethink this. Don't want to retun a bool, just want to run the function and then check after (in unity?) that it wasn't the wrong decision
    exception
       when others =>
          return False;
@@ -13,17 +13,20 @@ package body Game_Loop is
    
    function OpenExteriorDoor return CSharp_Bool is
    begin
-      return CSharp_Bool (CloseOuter);
+      return CSharp_Bool (CloseOuter); -- as above
    exception
       when others =>
          return False;
    end OpenExteriorDoor;
    
    
--- Make sure all functions that alter the sub stats are called at some point to keep the sub pos etc accurate (i.e. don't forget anything)
--- Can I get these functions to execute the related sub functions and return the new depth instead?   
--- Do I need to turn them into procedures instead?
--- All movement related functions will end up functioning the same and I suspect it's a case of carrying out the related function then returning the new values
+-- All movement related functions will end up functioning the same 
+-- and I suspect it's a case of carrying out the related function then returning the new values
+-- compare these new values to the old ones and determine if there was any change
+-- where do I find out if it was incorrect though? Is that within the SPARK files or do I need to put that check in Unity?
+
+
+-- ...Do I need to turn them into procedures instead?
 
    procedure SubDive is
    begin
@@ -101,6 +104,7 @@ package body Game_Loop is
    -- how many functions will I need to run every frame?
    -- need all sub stats returned to update the UI PLUS need to always check for emergency surface
    -- (Are there any other features like emergency function where the sub needs to take an action on it's own on the basis of something else?)
+   
    -- something like :
    
    function GetSubStats return Sub is
