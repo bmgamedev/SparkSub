@@ -92,9 +92,6 @@ package body Game_Loop is
    
    procedure SubEmergencySurface is
    begin
-		 return Depth;
-		 return Temp;
-		 return Oxygen;
 		 EmergencySurface;
    exception
    when others =>
@@ -106,23 +103,6 @@ package body Game_Loop is
    -- (Are there any other features like emergency function where the sub needs to take an action on it's own on the basis of something else?)
    -- something like :
    
-   procedure SubStats (Depth : out Integer; 
-                       Temp : out Integer; 
-                       Oxygen : out Integer; 
-                       FrontSpace : out Integer; 
-                       InnerAirlockPos : out CSharp_Bool; -- or some custom type in place of the bool
-					   InnerAirlockLock : out CSharp_Bool; -- or some custom type in place of the bool
-					   OuterAirlockPos : out CSharp_Bool; -- or some custom type in place of the bool
-					   OuterAirlockLock : out CSharp_Bool; -- or some custom type in place of the bool
-					   FiringArray : out Integer; -- double check if this will be an int tho
-					   AmmoSilo : out Integer ) is
-   begin 
-		 EmergencySurface;
-   exception
-   when others =>
-         null; -- Need something different here? Can I get away with not having it? If the coursework isn't correct, could break the game...
-   end SubStats;
-   
    function GetSubStats return Sub is
    begin
       return MySub;
@@ -130,13 +110,7 @@ package body Game_Loop is
       when others =>
          return (others => <>); --What's this?
    end GetSubStats;
-   
-   --"Ada doesn't have a tuple construct and does not allow returning multiple values from a subprogram 
-   --(except by declaring a full-fledged record type). 
-   --Hence, a way to return multiple values from a subprogram is to use out parameters."
-   -- procedure Read_Int (Stream : Network_Stream; Success : out Boolean; Result : out Integer);
-   -- https://learn.adacore.com/courses/intro-to-ada/chapters/subprograms.html
-   -- Although it's hard to tell if this is actually correct right now...
+
    
    -- ------------------------------------------
    
