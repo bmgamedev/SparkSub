@@ -5,43 +5,42 @@ with Submarine; use Submarine;
 
 package Game_Loop is
 
-   type CSharp_Bool is new Boolean with Size => 8;
+   -- type CSharp_Bool is new Boolean with Size => 8;
 
-   function OpenInteriorDoor return CSharp_Bool
-     with Export,
-     Convention => C,
-     External_Name => "sub_open_interior_door";
+   -- function OpenInteriorDoor return CSharp_Bool
+   --   with Export,
+   --   Convention => C,
+   --   External_Name => "sub_open_interior_door";
 	 
-   function OpenExteriorDoor return CSharp_Bool
-     with Export,
-     Convention => C,
-     External_Name => "sub_open_exterior_door";
+   -- function OpenExteriorDoor return CSharp_Bool
+   --   with Export,
+   --   Convention => C,
+   --   External_Name => "sub_open_exterior_door";
 	 
    --what is pushback and what is comealongside? do I need bools or ints? 
    --And what do I need to do with Invariant and AtSea?
-
 	 
-   function SubDive return Integer --or CSharp_Bool. Is it incremental or one and done?
+   procedure SubDive -- Is it incremental or one and done?
      with Export,
      Convention => C,
      External_Name => "sub_dive";
 	 
-   function SubSurface return Integer --or CSharp_Bool. Is it incremental or one and done?
+   procedure SubSurface -- Is it incremental or one and done?
      with Export,
      Convention => C,
      External_Name => "sub_surface";
 	 
-   function SubGoForward return Integer
+   procedure SubGoForward 
      with Export,
      Convention => C,
      External_Name => "sub_go_forward";
 	 
-   function SubGoBack return Integer
+   procedure SubGoBack 
      with Export,
      Convention => C,
      External_Name => "sub_go_back";
 	 
-   function SubEmergencySurface return CSharp_Bool -- check for this every frame in the game and have it execute when true?
+   procedure SubEmergencySurface
      with Export,
      Convention => C,
      External_Name => "sub_emergency_surface";
