@@ -7,39 +7,41 @@ package Game_Loop is
 
    type CSharp_Bool is new Boolean with Size => 8;
 
-   function OpenInteriorDoor (maybesomestuffhere...) return CSharp_Bool
+   function OpenInteriorDoor return CSharp_Bool
      with Export,
      Convention => C,
      External_Name => "sub_open_interior_door";
 	 
-   function OpenExteriorDoor (maybesomestuffhere...) return CSharp_Bool
+   function OpenExteriorDoor return CSharp_Bool
      with Export,
      Convention => C,
      External_Name => "sub_open_exterior_door";
 	 
-   --what is pushback and what is comealongside? do I need bools or ints?
+   --what is pushback and what is comealongside? do I need bools or ints? 
+   --And what do I need to do with Invariant and AtSea?
+
 	 
-   function SubDive (maybesomestuffhere...) return Integer --or CSharp_Bool. Is it incremental or one and done?
+   function SubDive return Integer --or CSharp_Bool. Is it incremental or one and done?
      with Export,
      Convention => C,
      External_Name => "sub_dive";
 	 
-   function SubSurface (maybesomestuffhere...) return Integer --or CSharp_Bool. Is it incremental or one and done?
+   function SubSurface return Integer --or CSharp_Bool. Is it incremental or one and done?
      with Export,
      Convention => C,
      External_Name => "sub_surface";
 	 
-   function SubGoForward (maybesomestuffhere...) return Integer
+   function SubGoForward return Integer
      with Export,
      Convention => C,
      External_Name => "sub_go_forward";
 	 
-   function SubGoBack (maybesomestuffhere...) return Integer
+   function SubGoBack return Integer
      with Export,
      Convention => C,
      External_Name => "sub_go_back";
 	 
-   function SubEmergencySurface (maybesomestuffhere...) return CSharp_Bool -- check for this every frame in the game and have it execute when true?
+   function SubEmergencySurface return CSharp_Bool -- check for this every frame in the game and have it execute when true?
      with Export,
      Convention => C,
      External_Name => "sub_emergency_surface";
@@ -50,6 +52,14 @@ package Game_Loop is
    -- - procedure Pop
    -- - procedure Fire (n : Tube) (function TorpedoFire (n : Tube) return ... bool for success? Int for # left?)
    -- - procedure Load (n : Tube) (function TorpedoLoad (n : Tube) return ... bool for success? Int for # loaded?)
+	 
+	 
+	 
+	 
+   function GetSubStats return Sub
+     with Export,
+     Convention => C,
+     External_Name => "get_sub_stats";
 	 
 
 end Game_Loop;
