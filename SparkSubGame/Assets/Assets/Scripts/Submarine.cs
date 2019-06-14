@@ -6,16 +6,19 @@ using UnityEngine;
 public class Submarine : MonoBehaviour {
 
     [DllImport("submarine")]
-    private static extern void sub_dive();
+    private static extern void Sub_dive();
 
     [DllImport("submarine")]
-    private static extern void sub_surface();
+    private static extern void Sub_surface();
 
     [DllImport("submarine")]
-    private static extern void sub_go_forward();
+    private static extern void Sub_go_forward();
 
     [DllImport("submarine")]
-    private static extern void sub_go_back();
+    private static extern void Sub_go_back();
+
+    [DllImport("submarine")]
+    private static extern void Sub_set_up();
 
     private struct Sub
     {
@@ -32,7 +35,7 @@ public class Submarine : MonoBehaviour {
     }
 	
 	[DllImport("submarine")]
-    private static extern Sub get_sub_stats();
+    private static extern Sub Get_sub_stats();
 
     Sub curSub, prevSub;
 
@@ -43,6 +46,7 @@ public class Submarine : MonoBehaviour {
         //curSub = get_sub_stats();
         //prevSub = get_sub_stats();
 
+        Sub_set_up();
     }
 	
 	//called each frame
@@ -56,36 +60,36 @@ public class Submarine : MonoBehaviour {
         {
             //move sub left
             print("Moving left\n");
-            prevSub = get_sub_stats();
-            sub_go_forward();
-            curSub = get_sub_stats();
+            prevSub = Get_sub_stats();
+            Sub_go_forward();
+            curSub = Get_sub_stats();
             PrintStats();
         } 
 		else if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             //move right
             print("Moving right\n");
-            prevSub = get_sub_stats();
-            sub_go_back();
-            curSub = get_sub_stats();
+            prevSub = Get_sub_stats();
+            Sub_go_back();
+            curSub = Get_sub_stats();
             PrintStats();
         } 
 		else if (Input.GetKeyUp(KeyCode.DownArrow))
         {
             //dive
             print("Diving\n");
-            prevSub = get_sub_stats();
-            sub_dive();
-            curSub = get_sub_stats();
+            prevSub = Get_sub_stats();
+            Sub_dive();
+            curSub = Get_sub_stats();
             PrintStats();
         }
         else if (Input.GetKeyUp(KeyCode.UpArrow))
         {
             //surface
             print("Surfacing\n");
-            prevSub = get_sub_stats();
-            sub_surface();
-            curSub = get_sub_stats();
+            prevSub = Get_sub_stats();
+            Sub_surface();
+            curSub = Get_sub_stats();
             PrintStats();
         } 
 		/*else if (Input.GetKeyUp(KeyCode.Space))

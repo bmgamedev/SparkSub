@@ -105,6 +105,12 @@ package body Game_Loop is
          return (others => <>); --What's this?
    end GetSubStats;
 
+   procedure SetUpForTesting is 
+   begin
+		 CloseInner;
+		 CloseOuter;
+		 MySub.InnerAirlockLock := Locked;
+   end SetUpForTesting;
    
    -- ------------------------------------------
    

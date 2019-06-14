@@ -23,27 +23,27 @@ package Game_Loop is
    procedure SubDive -- Is it incremental or one and done?
      with Export,
      Convention => C,
-     External_Name => "sub_dive";
+     External_Name => "Sub_dive";
 	 
    procedure SubSurface -- Is it incremental or one and done?
      with Export,
      Convention => C,
-     External_Name => "sub_surface";
+     External_Name => "Sub_surface";
 	 
    procedure SubGoForward 
      with Export,
      Convention => C,
-     External_Name => "sub_go_forward";
+     External_Name => "Sub_go_forward";
 	 
    procedure SubGoBack 
      with Export,
      Convention => C,
-     External_Name => "sub_go_back";
+     External_Name => "Sub_go_back";
 	 
    procedure SubEmergencySurface
      with Export,
      Convention => C,
-     External_Name => "sub_emergency_surface";
+     External_Name => "Sub_emergency_surface";
 	 
 
    --still to do:
@@ -58,7 +58,11 @@ package Game_Loop is
    function GetSubStats return Sub
      with Export,
      Convention => C,
-     External_Name => "get_sub_stats";
+     External_Name => "Get_sub_stats";
 	 
+   procedure SetUpForTesting
+     with Export,
+     Convention => C,
+     External_Name => "Sub_set_up";
 
 end Game_Loop;
