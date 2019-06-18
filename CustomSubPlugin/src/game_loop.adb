@@ -97,21 +97,111 @@ package body Game_Loop is
    
    -- something like :
    
+   --procedure UpdateSub is
+   --begin
+	--	 MySub := (Depth => MySub.Depth,
+     --              Temp => MySub.Temp,
+    --               Oxygen => MySub.Oxygen,
+    --               FrontSpace => MySub.FrontSpace,
+	--			   InnerAirlockPos => MySub.InnerAirlockPos,
+	--			   InnerAirlockLock => MySub.InnerAirlockLock,
+	--			   OuterAirlockPos => MySub.OuterAirlockPos,
+	--			   OuterAirlockLock => MySub.OuterAirlockLock,
+	--			   FiringArray => MySub.FiringArray,
+	--			   AmmoSilo => MySub.AmmoSilo);
+   --end UpdateSub;
+   
    function GetSubStats return Sub is
    begin
+      --UpdateSub;
       return MySub;
    exception
       when others =>
          return (others => <>); --What's this?
    end GetSubStats;
 
-   procedure SetUpForTesting is 
+   function GetSubInnerAirlockPos return CSharp_Bool is
    begin
-		 CloseInner;
-		 CloseOuter;
-		 MySub.InnerAirlockLock := Locked;
-   end SetUpForTesting;
+     if MySub.InnerAirlockPos = Closed then
+	   return True;
+	 else
+	   return False;
+	 end if;
+   end GetSubInnerAirlockPos;
    
+   function GetSubInnerAirlockLock return CSharp_Bool is
+   begin
+     if MySub.InnerAirlockLock = Locked then
+	   return True;
+	 else
+	   return False;
+	 end if;
+   end GetSubInnerAirlockLock;
+   
+   function GetSubOuterAirlockPos return CSharp_Bool is
+   begin
+     if MySub.OuterAirlockPos = Closed then
+	   return True;
+	 else
+	   return False;
+	 end if;
+   end GetSubOuterAirlockPos;
+   
+   function GetSubOuterAirlockLock return CSharp_Bool is
+   begin
+     if MySub.OuterAirlockLock = Locked then
+	   return True;
+	 else
+	   return False;
+	 end if;
+   end GetSubOuterAirlockLock;
+   
+   --procedure SetUpForTesting is 
+   --begin
+	--	 CloseInner;
+	--	 CloseOuter;
+	--	 MySub.InnerAirlockLock := Locked;
+  -- end SetUpForTesting;
+   
+   procedure CloseInnerDoor is
+   begin
+         CloseInner;
+   exception
+   when others =>
+         null;
+   end CloseInnerDoor;
+   
+   procedure CloseOuterDoor is
+   begin
+     CloseOuter;
+   end CloseOuterDoor;
+   
+   procedure LockInnerDoor is
+   begin
+         MySub.InnerAirlockLock := Locked;
+   exception
+   when others =>
+         null;
+   end LockInnerDoor;
+   
+   procedure LockOuterDoor is
+   begin
+     MySub.OuterAirlockLock := Locked;
+   end LockOuterDoor;
+   
+   procedure ResetSub is
+   begin
+      MySub.Depth := 0;
+      MySub.Temp := 0;
+      MySub.Oxygen := 100;
+      MySub.FrontSpace := 100;
+      MySub.InnerAirlockPos := Open;
+      MySub.InnerAirlockLock := Unlocked;
+      MySub.OuterAirlockPos := Closed;
+      MySub.OuterAirlockLock := Locked;
+      MySub.FiringArray := (others => Loaded);
+      MySub.AmmoSilo := (others => Loaded);
+   end ResetSub;
    -- ------------------------------------------
    
    --still to do:

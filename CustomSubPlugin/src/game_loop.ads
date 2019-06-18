@@ -5,7 +5,7 @@ with Submarine; use Submarine;
 
 package Game_Loop is
 
-   -- type CSharp_Bool is new Boolean with Size => 8;
+   type CSharp_Bool is new Boolean with Size => 8;
 
    -- function OpenInteriorDoor return CSharp_Bool
    --   with Export,
@@ -52,17 +52,76 @@ package Game_Loop is
    -- - procedure Fire (n : Tube) (function TorpedoFire (n : Tube) return ... bool for success? Int for # left?)
    -- - procedure Load (n : Tube) (function TorpedoLoad (n : Tube) return ... bool for success? Int for # loaded?)
 	 
-	 
-	 
-	 
    function GetSubStats return Sub
      with Export,
      Convention => C,
      External_Name => "Get_sub_stats";
 	 
-   procedure SetUpForTesting
+   --procedure SetUpForTesting
+    -- with Export,
+    -- Convention => C,
+    -- External_Name => "Sub_set_up";
+	 
+	 
+   function GetSubInnerAirlockPos return CSharp_Bool
      with Export,
      Convention => C,
-     External_Name => "Sub_set_up";
+     External_Name => "Get_innerairlock_pos";
+	
+   function GetSubInnerAirlockLock return CSharp_Bool
+     with Export,
+     Convention => C,
+     External_Name => "Get_innerairlock_lock";
+	 
+   function GetSubOuterAirlockPos return CSharp_Bool
+     with Export,
+     Convention => C,
+     External_Name => "Get_outerairlock_pos";
+	
+   function GetSubOuterAirlockLock return CSharp_Bool
+     with Export,
+     Convention => C,
+     External_Name => "Get_outerairlock_lock";
+	 
+	 
+   procedure ResetSub
+     with Export,
+     Convention => C,
+     External_Name => "Sub_reset";
+	 
+   procedure CloseInnerDoor
+     with Export,
+     Convention => C,
+     External_Name => "Close_inner_door";
+   
+   procedure CloseOuterDoor
+     with Export,
+     Convention => C,
+     External_Name => "Close_outer_door";
+   
+   procedure LockInnerDoor
+     with Export,
+     Convention => C,
+     External_Name => "Lock_inner_door";
+   
+   procedure LockOuterDoor
+     with Export,
+     Convention => C,
+     External_Name => "Lock_outer_door";
+	 
+  -- function GetSubDepth return DepthRange
+   --  with Export,
+   --  Convention => C,
+   --  External_Name => "Get_sub_depth";
 
+   --function GetSubFront return FrontSonarRange
+   --  with Export,
+   --  Convention => C,
+    -- External_Name => "Get_sub_front";
+	 
+  -- function GetSubInnerAirLockPos return CSharp_Bool
+   --  with Export,
+   --  Convention => C,
+   --  External_Name => "Get_inner_airlock_pos";
+	 
 end Game_Loop;

@@ -15,20 +15,20 @@ RV NO_EXCEPTIONS
 RV NO_IMPLEMENTATION_PRAGMAS
 RV SPARK_05
 
-U game_loop%b		game_loop.adb		92999755 NE OO PK
+U game_loop%b		game_loop.adb		0a3588d7 NE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.real_time%s	a-reatim.adb		a-reatim.ali
 W interfaces%s		interfac.ads		interfac.ali
 
-U game_loop%s		game_loop.ads		10a02e87 EE NE OO PK
+U game_loop%s		game_loop.ads		4c123f76 EE NE OO PK
 W submarine%s		submarine.adb		submarine.ali
 
 D ada.ads		20190518041256 76789da1 ada%s
 D a-except.ads		20190518041256 291912d5 ada.exceptions%s
 D a-reatim.ads		20190518041258 0240fc73 ada.real_time%s
 D a-unccon.ads		20190518041256 0e9b276f ada.unchecked_conversion%s
-D game_loop.ads		20190614162716 284bada0 game_loop%s
-D game_loop.adb		20190614162642 e22794ee game_loop%b
+D game_loop.ads		20190618201426 74f9bc51 game_loop%s
+D game_loop.adb		20190618201356 26399a9d game_loop%b
 D interfac.ads		20190518041256 5ab55268 interfaces%s
 D i-c.ads		20190518041256 5421119b interfaces.c%s
 D i-cstrin.ads		20190518041256 341d0ddf interfaces.c.strings%s
@@ -58,38 +58,75 @@ G c Z s b [subsurface game_loop 28 14 none]
 G c Z s b [subgoforward game_loop 33 14 none]
 G c Z s b [subgoback game_loop 38 14 none]
 G c Z s b [subemergencysurface game_loop 43 14 none]
-G c Z s b [getsubstats game_loop 58 13 none]
-G c Z s b [setupfortesting game_loop 63 14 none]
+G c Z s b [getsubstats game_loop 55 13 none]
+G c Z s b [getsubinnerairlockpos game_loop 66 13 none]
+G c Z s b [getsubinnerairlocklock game_loop 71 13 none]
+G c Z s b [getsubouterairlockpos game_loop 76 13 none]
+G c Z s b [getsubouterairlocklock game_loop 81 13 none]
+G c Z s b [resetsub game_loop 87 14 none]
+G c Z s b [closeinnerdoor game_loop 92 14 none]
+G c Z s b [closeouterdoor game_loop 97 14 none]
+G c Z s b [lockinnerdoor game_loop 102 14 none]
+G c Z s b [lockouterdoor game_loop 107 14 none]
 G r c none [subdive game_loop 23 14 none] [dive submarine 73 14 none]
 G r c none [subsurface game_loop 28 14 none] [surface submarine 81 14 none]
 G r c none [subgoforward game_loop 33 14 none] [goforward submarine 88 14 none]
 G r c none [subgoback game_loop 38 14 none] [goback submarine 95 14 none]
 G r c none [subemergencysurface game_loop 43 14 none] [emergencysurface submarine 103 14 none]
-G r c none [setupfortesting game_loop 63 14 none] [closeinner submarine 54 14 none]
-G r c none [setupfortesting game_loop 63 14 none] [closeouter submarine 48 14 none]
+G r c none [closeinnerdoor game_loop 92 14 none] [closeinner submarine 54 14 none]
+G r c none [closeouterdoor game_loop 97 14 none] [closeouter submarine 48 14 none]
 X 1 ada.ads
 16K9*Ada 20e8 6|1r6 1r25
 X 3 a-reatim.ads
 39K13*Real_Time 185e18 6|1w10 1r29
 X 5 game_loop.ads
-6K9*Game_Loop 68l5 68e14 6|4b14 128l5 128t14
+6K9*Game_Loop 127l5 127e14 6|4b14 218l5 218t14
+8B9*CSharp_Bool<boolean> 66r42 71r43 76r42 81r43 6|123r42 132r43 141r42 150r43
 23U14*SubDive 6|31b14 37l8 37t15
 28U14*SubSurface 6|52b14 58l8 58t18
 33U14*SubGoForward 6|60b14 66l8 66t20
 38U14*SubGoBack 6|68b14 74l8 74t17
 43U14*SubEmergencySurface 6|81b14 87l8 87t27
-58V13*GetSubStats{10|21R9} 6|100b13 106l8 106t19
-63U14*SetUpForTesting 6|108b14 113l8 113t23
+55V13*GetSubStats{10|21R9} 6|114b13 121l8 121t19
+66V13*GetSubInnerAirlockPos{8E9} 6|123b13 130l8 130t29
+71V13*GetSubInnerAirlockLock{8E9} 6|132b13 139l8 139t30
+76V13*GetSubOuterAirlockPos{8E9} 6|141b13 148l8 148t29
+81V13*GetSubOuterAirlockLock{8E9} 6|150b13 157l8 157t30
+87U14*ResetSub 6|192b14 204l8 204t16
+92U14*CloseInnerDoor 6|166b14 172l8 172t22
+97U14*CloseOuterDoor 6|174b14 177l8 177t22
+102U14*LockInnerDoor 6|179b14 185l8 185t21
+107U14*LockOuterDoor 6|187b14 190l8 190t21
 X 7 interfac.ads
 38K9*Interfaces 6|2w6 2r22 7|184e15
 X 10 submarine.ads
 1K9*Submarine 5|1w6 1r21 10|167e14
-11n27*Locked{11E9} 6|112r44
-21R9*Sub 5|58r32 6|100r32 10|32e14
-27e7*InnerAirlockLock{11E9} 6|112m24
-34r4*MySub{21R9} 6|102r14 112m18
-48U14*CloseOuter 6|111s18
-54U14*CloseInner 6|110s18
+4I9*DepthRange<short_short_integer>
+5I9*TempRange<short_short_integer>
+6I9*OxygenRange<short_short_integer>
+7I9*FrontSonarRange<short_short_integer>
+10n18*Open{10E9} 6|198r32
+10n23*Closed{10E9} 6|125r33 143r33 200r32
+11n18*Unlocked{11E9} 6|199r33
+11n27*Locked{11E9} 6|134r34 152r34 181r36 189r32 201r33
+16n21*Loaded{16E9} 6|202r39 203r36
+17A9*TorpedoTubes(16E9)<14I9>
+18A9*TorpedoStore(16E9)<15I9>
+21R9*Sub 5|55r32 6|114r32 10|32e14
+22i7*Depth{4I9} 6|194m13
+23i7*Temp{5I9} 6|195m13
+24i7*Oxygen{6I9} 6|196m13
+25i7*FrontSpace{7I9} 6|197m13
+26e7*InnerAirlockPos{10E9} 6|125r15 198m13
+27e7*InnerAirlockLock{11E9} 6|134r15 181m16 199m13
+28e7*OuterAirlockPos{10E9} 6|143r15 200m13
+29e7*OuterAirlockLock{11E9} 6|152r15 189m12 201m13
+30a7*FiringArray{17A9} 6|202m13
+31a7*AmmoSilo{18A9} 6|203m13
+34r4*MySub{21R9} 6|117r14 125r9 134r9 143r9 152r9 181m10 189m6 194m7 195m7
+. 196m7 197m7 198m7 199m7 200m7 201m7 202m7 203m7
+48U14*CloseOuter 6|176s6
+54U14*CloseInner 6|168s10
 73U14*Dive 6|33s10
 81U14*Surface 6|54s10
 88U14*GoForward 6|62s10
