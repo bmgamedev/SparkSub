@@ -6,16 +6,6 @@ with Submarine; use Submarine;
 package Game_Loop is
 
    type CSharp_Bool is new Boolean with Size => 8;
-
-   -- function OpenInteriorDoor return CSharp_Bool
-   --   with Export,
-   --   Convention => C,
-   --   External_Name => "sub_open_interior_door";
-	 
-   -- function OpenExteriorDoor return CSharp_Bool
-   --   with Export,
-   --   Convention => C,
-   --   External_Name => "sub_open_exterior_door";
 	 
    --what is pushback and what is comealongside? do I need bools or ints? 
    --And what do I need to do with Invariant and AtSea?
@@ -108,20 +98,5 @@ package Game_Loop is
      with Export,
      Convention => C,
      External_Name => "Lock_outer_door";
-	 
-  -- function GetSubDepth return DepthRange
-   --  with Export,
-   --  Convention => C,
-   --  External_Name => "Get_sub_depth";
-
-   --function GetSubFront return FrontSonarRange
-   --  with Export,
-   --  Convention => C,
-    -- External_Name => "Get_sub_front";
-	 
-  -- function GetSubInnerAirLockPos return CSharp_Bool
-   --  with Export,
-   --  Convention => C,
-   --  External_Name => "Get_inner_airlock_pos";
 	 
 end Game_Loop;

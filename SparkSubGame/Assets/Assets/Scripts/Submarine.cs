@@ -47,15 +47,6 @@ public class Submarine : MonoBehaviour {
     [DllImport("submarine")]
     private static extern bool Get_outerairlock_lock();
 
-    /*[DllImport("submarine")]
-    private static extern int Get_sub_depth();
-
-    [DllImport("submarine")]
-    private static extern int Get_sub_front();
-
-    [DllImport("submarine")]
-    private static extern bool Get_inner_airlock_pos();*/
-
     private struct Sub
     {
         public byte Depth;
@@ -63,13 +54,13 @@ public class Submarine : MonoBehaviour {
         public byte Oxygen;
         public byte FrontSpace;
 
-		public bool InnerAirlockPos; //Might change from bool to something else later (enum, etc)
-		public bool InnerAirlockLock; //Might change from bool to something else later (enum, etc)
-		public bool OuterAirlockPos; //Might change from bool to something else later (enum, etc)
-		public bool OuterAirlockLock; //Might change from bool to something else later (enum, etc)
+		public bool InnerAirlockPos; 
+		public bool InnerAirlockLock; 
+		public bool OuterAirlockPos;
+		public bool OuterAirlockLock; 
 
-		public byte FiringArray; //Don't know if this is int or byte yet...
-		public byte AmmoSilo; //Don't know if this is int or byte yet...
+		public byte FiringArray; 
+		public byte AmmoSilo; 
     }
 
 	[DllImport("submarine")]
@@ -77,24 +68,6 @@ public class Submarine : MonoBehaviour {
 
     Sub curSub;
     Sub prevSub;
-    //bool isDiving;
-    //int curDepth, curFront;
-
-    //enum Door { Open, Closed };
-    //Door InnerDoor, OuterDoor;
-    //enum Lock { Unlocked, Locked };
-    //Lock InnerLock, OuterLock;
-
-    //void UpdateSub(Sub mySub) {
-        /*mySub.Depth = Get_sub_depth();
-        mySub.Temp = Get_sub_depth();
-        mySub.Oxygen = Get_sub_depth();
-        mySub.FrontSpace = Get_sub_front();
-        mySub.InnerAirlockPos = Get_inner_airlock_pos();
-        mySub.InnerAirlockLock = Get_sub_depth();
-        mySub.OuterAirlockPos = Get_sub_depth();
-        mySub.OuterAirlockLock = Get_sub_depth();*/
-    //}
 
     void Awake()
     {
@@ -117,57 +90,33 @@ public class Submarine : MonoBehaviour {
         prevSub = Get_sub_stats();
         //So so so much duplication, plz fix soon...
 
-        /*if (Input.GetKeyDown(KeyCode.DownArrow) && !isDiving)
-        {
-            //dive
-            isDiving = true;
-            print("Diving\n");
-            
-            Sub_dive();
-            curSub = Get_sub_stats();
-            PrintStats();
-        }
-        if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            isDiving = false;
-        }*/
-
-
         //Do some sub stuff
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
             //move sub left
             print("Moving left\n");
-            //prevSub = Get_sub_stats();
             Sub_go_forward();
-            curSub = Get_sub_stats();
             PrintStats();
         } 
 		else if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             //move right
             print("Moving right\n");
-            //prevSub = Get_sub_stats();
             Sub_go_back();
-            curSub = Get_sub_stats();
             PrintStats();
         } 
 		else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             //dive
             print("Diving\n");
-            //prevSub = Get_sub_stats();
             Sub_dive();
-            curSub = Get_sub_stats();
             PrintStats();
         }
         else if (Input.GetKeyUp(KeyCode.UpArrow))
         {
             //surface
             print("Surfacing\n");
-            //prevSub = Get_sub_stats();
             Sub_surface();
-            curSub = Get_sub_stats();
             PrintStats();
         }
         //else if (Input.GetKeyUp(KeyCode.Space))
@@ -180,7 +129,6 @@ public class Submarine : MonoBehaviour {
             //reset
             print("Resetting...\n");
             Sub_reset();
-            curSub = Get_sub_stats();
             PrintStats();
         }
 
@@ -189,8 +137,6 @@ public class Submarine : MonoBehaviour {
             //reset
             print("Closing inner door...\n");
             Close_inner_door();
-            curSub = Get_sub_stats();
-            //UpdateDoors();
             PrintStats();
         }
         if (Input.GetKeyUp(KeyCode.Alpha2))
@@ -198,8 +144,6 @@ public class Submarine : MonoBehaviour {
             //reset
             print("Locking inner door...\n");
             Lock_inner_door();
-            curSub = Get_sub_stats();
-            //UpdateDoors();
             PrintStats();
         }
         if (Input.GetKeyUp(KeyCode.Alpha3))
@@ -207,8 +151,6 @@ public class Submarine : MonoBehaviour {
             //reset
             print("Closing outer door...\n");
             Close_outer_door();
-            curSub = Get_sub_stats();
-            //UpdateDoors();
             PrintStats();
         }
         if (Input.GetKeyUp(KeyCode.Alpha4))
@@ -216,59 +158,13 @@ public class Submarine : MonoBehaviour {
             //reset
             print("Locking outer door...\n");
             Lock_outer_door();
-            curSub = Get_sub_stats();
-            //UpdateDoors();
             PrintStats();
         }
 
     }
 
-    /*void UpdateDoors() {
-        if (!curSub.InnerAirlockPos == true) {
-            InnerDoor = Door.Open;
-        }
-        else
-        {
-            InnerDoor = Door.Closed;
-        }
-
-        if (!curSub.InnerAirlockLock == true)
-        {
-            InnerLock = Lock.Locked;
-        }
-        else
-        {
-            InnerLock = Lock.Unlocked;
-        }
-
-        if (!curSub.OuterAirlockPos == true)
-        {
-            OuterDoor = Door.Open;
-        }
-        else
-        {
-            OuterDoor = Door.Closed;
-        }
-
-        if (!curSub.OuterAirlockLock == true)
-        {
-            OuterLock = Lock.Locked;
-        }
-        else
-        {
-            OuterLock = Lock.Unlocked;
-        }
-    }*/
-
     void PrintStats()
     {
-        //curDepth = Get_sub_depth();
-        //curFront = Get_sub_front();
-        //print("Depth: " + curDepth + ", front space: " + curFront + "\n");
-        //Debug.Log("old depth: " + prevSub.Depth + ", new depth: " + curSub.Depth + "\n" + "old front space: " + prevSub.FrontSpace + ", new front space: " + curSub.FrontSpace + "\n");
-        //print("inner air lock pos: " + Get_inner_airlock_pos().ToString() + "\n");
-        //print("inner air lock pos: " + InnerDoor + "\n");
-        //print("temp: " + curSub.Temp + ", oxygen: " + curSub.Oxygen + "\n");
 
         curSub = Get_sub_stats();
         UpdateDoors();
@@ -278,8 +174,8 @@ public class Submarine : MonoBehaviour {
         print("Temp: " + curSub.Temp + "\n");
         print("Oxygen: " + curSub.Oxygen + "\n");
         print("Front Space: " + curSub.FrontSpace + "\n");
-        print("Inner Door: " + curSub.InnerAirlockPos + "\n"); //False = , True = ???
-        print("Inner Lock: " + curSub.InnerAirlockLock + "\n"); //False = , True = ???
+        print("Inner Door: " + curSub.InnerAirlockPos + "\n"); 
+        print("Inner Lock: " + curSub.InnerAirlockLock + "\n"); 
         print("Outer Door: " + curSub.OuterAirlockPos + "\n");
         print("Outer Lock: " + curSub.OuterAirlockLock + "\n");
         print("Firing Array: " + curSub.FiringArray + "\n");
