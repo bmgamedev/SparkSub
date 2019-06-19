@@ -146,14 +146,49 @@ package body Game_Loop is
    -- ------------------------------------------
    
    --still to do:
-   -- - procedure Push
-   -- - procedure Pop
-   -- - procedure Fire (n : Tube) (function TorpedoFire (n : Tube) return ... bool for success? Int for # left?)
-   -- - procedure Load (n : Tube) (function TorpedoLoad (n : Tube) return ... bool for success? Int for # loaded?)
-   -- in terms of a restart, can I write a procedure to change the stats back to default?
+   -- Firing and reloading. Started but not working.
    
    
-
+   function CheckTorpedoTubeN (n : Tube) return CSharp_Bool is
+   begin
+	 if MySub.FiringArray(n) = Loaded then
+	   return True;
+	 else
+	   return False;
+	 end if;
+   exception
+      when others =>
+         return False;
+   end CheckTorpedoTubeN;
+   
+   procedure FireTorpedoTubeN (n : Tube) is
+   begin
+	 Fire(n);
+   exception
+   when others =>
+         null;
+   end FireTorpedoTubeN;
+   
+   --function LoadTorpedoTubeN (n : Tube) return CSharp_Bool is
+   --begin
+	-- Load(n);
+	-- if MySub.FiringArray(n) = Loaded then
+	--   return True; --it was a success
+	-- else
+	--   return False;
+	-- end if;
+   --exception
+   --   when others =>
+    --     return False;
+   --end LoadTorpedoTubeN;
+   
+   procedure LoadTorpedoTubeN (n : Tube) is
+   begin
+	 Load(n);
+   exception
+   when others =>
+         null;
+   end LoadTorpedoTubeN;
    
    
 end Game_Loop;

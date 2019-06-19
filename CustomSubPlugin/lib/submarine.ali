@@ -18,7 +18,7 @@ RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
 RV NO_IMPLEMENTATION_PRAGMAS
 RV SPARK_05
 
-U submarine%b		submarine.adb		5305b6da NE OO PK
+U submarine%b		submarine.adb		8d1c429a NE OO PK
 Z interfaces%s		interfac.ads		interfac.ali
 Z system.assertions%s	s-assert.adb		s-assert.ali
 
@@ -28,7 +28,7 @@ D ada.ads		20190518041256 76789da1 ada%s
 D a-unccon.ads		20190518041256 0e9b276f ada.unchecked_conversion%s
 D interfac.ads		20190518041256 5ab55268 interfaces%s
 D submarine.ads		20190402123330 38eb8327 submarine%s
-D submarine.adb		20190402115908 6bee35fd submarine%b
+D submarine.adb		20190619114848 b5f7c1bd submarine%b
 D system.ads		20190518041258 32a08138 system%s
 D s-assert.ads		20190518041256 cd8d2c94 system.assertions%s
 D s-exctab.ads		20190518041256 54135002 system.exception_table%s

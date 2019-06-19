@@ -99,4 +99,26 @@ package Game_Loop is
      Convention => C,
      External_Name => "Lock_outer_door";
 	 
+-- haven't decided whether the firing/loading is returning anything yet so I've just added both a procedure and a function...
+
+   function CheckTorpedoTubeN (n : Tube) return CSharp_Bool
+     with Export,
+     Convention => C,
+     External_Name => "Check_torpedotube_n";
+	 
+   procedure FireTorpedoTubeN (n : Tube) 
+     with Export,
+     Convention => C,
+     External_Name => "Fire_torpedotube_n";
+   
+   --function LoadTorpedoTubeN (n : Tube) return CSharp_Bool
+   --  with Export,
+   --  Convention => C,
+    -- External_Name => "Load_torpedotube_n";
+	 
+   procedure LoadTorpedoTubeN (n : Tube) 
+     with Export,
+     Convention => C,
+     External_Name => "Load_torpedotube_n";
+	 
 end Game_Loop;
