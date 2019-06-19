@@ -1,0 +1,149 @@
+V "GNAT Lib v2019"
+A -gnatA
+A -gnatyr
+A -g
+A -gnata
+A -gnatwa
+A -gnatw.X
+A -mtune=generic
+A -march=x86-64
+P SL ZX
+
+RN
+RV NO_DIRECT_BOOLEAN_OPERATORS
+RV NO_IMPLICIT_CONDITIONALS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U submarine%b		submarine.adb		8d1c429a NE OO PK
+Z interfaces%s		interfac.ads		interfac.ali
+Z system.assertions%s	s-assert.adb		s-assert.ali
+
+U submarine%s		submarine.ads		38eb8327 EE NE OO PK
+
+D ada.ads		20190518041256 76789da1 ada%s
+D a-unccon.ads		20190518041256 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20190518041256 5ab55268 interfaces%s
+D submarine.ads		20190402123330 38eb8327 submarine%s
+D submarine.adb		20190619114848 b5f7c1bd submarine%b
+D system.ads		20190518041258 32a08138 system%s
+D s-assert.ads		20190518041256 cd8d2c94 system.assertions%s
+D s-exctab.ads		20190518041256 54135002 system.exception_table%s
+D s-stalib.ads		20190518041258 09bd3940 system.standard_library%s
+G a e
+G c Z s s [TtorpedotubesBIP submarine 17 4 none]
+G c Z s s [TtorpedostoreBIP submarine 18 4 none]
+G c Z s s [subIP submarine 21 9 none]
+G c Z s s [invariant submarine 39 13 none]
+G c Z s s [atsea submarine 42 13 none]
+G c Z s b [closeouter submarine 48 14 none]
+G c Z s b [closeinner submarine 54 14 none]
+G c Z s b [pushback submarine 60 14 none]
+G c Z s b [comealongside submarine 65 14 none]
+G c Z s b [dive submarine 73 14 none]
+G c Z s b [surface submarine 81 14 none]
+G c Z s b [goforward submarine 88 14 none]
+G c Z s b [goback submarine 95 14 none]
+G c Z s b [emergencysurface submarine 103 14 none]
+G c Z s s [stack submarine 114 13 none]
+G c Z s b [push submarine 121 14 none]
+G c Z s b [pop submarine 129 14 none]
+G c Z s b [fire submarine 138 14 none]
+G c Z s b [load submarine 146 14 none]
+X 4 submarine.ads
+1K9*Submarine 167l5 167e14 5|1b14 156l5 156t14
+4I9*DepthRange<short_short_integer> 22r15 76r27 84r27 107r52 5|51r49 93r28
+5I9*TempRange<short_short_integer> 23r14 77r30 85r30 92r26 99r26 106r63 108r55
+. 5|41r24 53r28 58r24 70r28 81r28 91r63 96r21
+6I9*OxygenRange<short_short_integer> 24r16 76r62 84r63 91r73 98r72 106r29
+. 108r21 5|40r26 52r28 58r57 69r73 80r72 91r29 97r26
+7I9*FrontSonarRange<short_short_integer> 25r20 35r19 91r32 98r32 5|69r32
+. 80r32
+10E9*Door 10e30 26r25 28r25
+10n18*Open{10E9} 26r33
+10n23*Closed{10E9} 28r33 40r31 40r65 43r31 44r33 51r52 57r52 5|6r35 13r35
+11E9*Lock 11e34 27r26 29r26
+11n18*Unlocked{11E9} 27r34 5|32r36 33r36
+11n27*Locked{11E9} 29r34 43r67 44r69 5|22r36 23r36
+14I9*Tube<short_short_integer> 17r32 138r24 146r24 5|128r24 137r24
+15I9*Slot<short_short_integer> 18r32
+16E9*Torpedo 16e34 17r41 18r41
+16n21*Loaded{16E9} 30r48 31r45 117r68 126r30 131r62 141r29 149r45 150r61
+. 5|112r31 119r60 131r36 140r52 143r34
+16n28*Empty{16E9} 115r64 118r72 123r61 134r44 142r61 148r60 5|107r59 124r49
+. 133r34 139r58
+17A9*TorpedoTubes(16E9)<14I9> 30r21
+18A9*TorpedoStore(16E9)<15I9> 31r18
+21R9*Sub 32e14 34r12
+22i7*Depth{4I9} 62r33 67r29 68r34 76r19 84r19 107r44 5|19r31 30r27 43m13
+. 43r28 51r41 55m13 55r28 56r16 93r20 94m16 94r31
+23i7*Temp{5I9} 77r23 85r23 92r19 99r19 106r56 108r48 5|41r17 44m13 44r27
+. 53r21 58m16 60m16 60r30 70r21 73m16 73r30 81r21 84m16 84r30 91r56 96m13
+24i7*Oxygen{6I9} 76r53 84r54 91r64 98r63 106r20 108r12 5|40r17 52r19 58m47
+. 69r64 80r63 91r20 97m16
+25i7*FrontSpace{7I9} 62r53 67r49 68r54 91r19 98r19 140r43 5|19r51 30r47 69r19
+. 72m16 72r36 80r19 83m16 83r36 130r41
+26e7*InnerAirlockPos{10E9} 40r13 43r13 52r20 52r44 57r34 5|13m16
+27e7*InnerAirlockLock{11E9} 43r48 5|22m16 32m16
+28e7*OuterAirlockPos{10E9} 40r47 44r15 51r34 58r20 58r44 5|6m16
+29e7*OuterAirlockLock{11E9} 44r50 5|23m16 33m16
+30a7*FiringArray{17A9} 141r12 142r44 143r26 144r31 144r54 148r43 150r44 151r26
+. 152r31 152r54 5|131r19 133m16 139r41 143m16
+31a7*AmmoSilo{18A9} 115r26 115r50 116r26 117r27 117r54 118r35 118r58 123r29
+. 123r44 125r33 125r56 125r76 126r16 131r29 131r44 133r26 133r49 133r75 133r95
+. 134r12 134r27 149r12 149r27 5|107r27 107r42 109r33 109r56 110m16 110r39
+. 112m16 119r27 119r42 121r22 121r45 122m16 122r37 124m16 124r31 140r19 140r34
+34r4*MySub{21R9} 40r7 40r41 43r7 43r42 44r9 44r44 49r27 51r28 52r14 52r38
+. 55r27 57r28 58r14 58r38 61r27 62r27 62r47 66r27 67r23 67r43 68r28 68r48
+. 74r27 76r13 76r47 77r17 82r27 84r13 84r48 85r17 89r27 91r13 91r58 92r13
+. 96r27 98r13 98r57 99r13 104r27 106r14 106r50 107r38 108r6 108r42 115r20
+. 115r44 116r20 117r21 117r48 118r29 118r52 122r27 123r23 123r38 125r27 125r50
+. 125r70 126r10 130r27 131r23 131r38 133r20 133r43 133r69 133r89 134r6 134r21
+. 139r27 140r37 141r6 142r38 143r20 144r25 144r48 147r27 148r37 149r6 149r21
+. 150r38 151r20 152r25 152r48 5|6m10 13m10 19r25 19r45 22m10 23m10 30r21
+. 30r41 32m10 33m10 40r11 41r11 43m7 43r22 44m7 44r21 51r35 52r13 53r15 55m7
+. 55r22 56r10 58m10 58m41 60m10 60r24 69r13 69r58 70r15 72m10 72r30 73m10
+. 73r24 80r13 80r57 81r15 83m10 83r30 84m10 84r24 91r14 91r50 93r14 94m10
+. 94r25 96m7 97m10 107r21 107r36 109r27 109r50 110m10 110r33 112m10 119r21
+. 119r36 121r16 121r39 122m10 122r31 124m10 124r25 130r35 131r13 133m10 139r35
+. 140r13 140r28 143m10
+35i4*safeDistance{7I9} 139r43 140r56 5|130r54
+39V13*Invariant{boolean} 50s13 51s14 56s13 57s14 62s13 68s14 75s13 78s14
+. 83s13 86s14 90s13 93s14 97s13 100s14 105s13 107s14 123s71 124s24 131s73
+. 132s24 140s13 142s14 148s13 150s14 5|5s10 12s10 19s11 39s11 51s11 68s11
+. 79s11 90s11 107s69 119s71 130s11 139s11
+42V13*AtSea{boolean} 63s14 67s13 75s27 78s28 83s27 86s28 90s27 93s28 97s27
+. 100s28 105s27 107s28 140s27 142s28 148s27 150s28 5|30s11 39s25 51s25 68s25
+. 79s25 90s25 130s25 139s25
+48U14*CloseOuter 5|3b14 8l8 8t18 21s10
+54U14*CloseInner 5|10b14 15l8 15t18 21s22
+60U14*PushBack 5|17b14 26l8 26t16
+65U14*ComeAlongside 5|28b14 35l8 35t21
+73U14*Dive 5|37b14 47l8 47t12
+81U14*Surface 5|49b14 64l8 64t15
+88U14*GoForward 5|66b14 75l8 75t17
+95U14*GoBack 5|77b14 86l8 86t14
+103U14*EmergencySurface 5|88b14 100l8 100t24
+114V13*Stack{boolean} 123s13 124s14 131s13 132s14 149s56 5|107s11 119s11
+. 140s63
+115i15 K<short_short_integer> 115r59
+116i15 M<short_short_integer> 117r43 118r23
+117i16 I<short_short_integer> 117r63
+118i17 J<short_short_integer> 118r67
+121U14*Push 5|105b14 115l8 115t12
+125i19 I<short_short_integer> 125r65 125r89
+129U14*Pop 5|117b14 126l8 126t11 142s10
+133i15 I<short_short_integer> 133r84 133r108
+138U14*Fire 138>20 5|128b14 135l8 135t12
+138i20 n{14I9} 141r24 142r56 144r18 5|128b20 131r31 133r28
+143i15 I<short_short_integer> 144r13 144r43 144r70
+146U14*Load 146>20 5|137b14 145l8 145t12
+146i20 n{14I9} 148r55 150r56 152r18 5|137b20 139r53 143r28
+151i15 I<short_short_integer> 152r13 152r43 152r70
+X 5 submarine.adb
+109i14 I<short_short_integer> 110r25 110r48
+121i11 I<short_short_integer> 122r25 122r46
+
