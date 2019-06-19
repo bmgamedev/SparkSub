@@ -102,15 +102,15 @@ public class Submarine : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
             //move sub left
-            print("Moving left\n");
-            Sub_go_forward();
+            print("Moving left (back)\n");
+            Sub_go_back();
             PrintStats();
         } 
 		else if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             //move right
-            print("Moving right\n");
-            Sub_go_back();
+            print("Moving right (forward)\n");
+            Sub_go_forward();
             PrintStats();
         } 
 		else if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -219,15 +219,15 @@ public class Submarine : MonoBehaviour {
         curSub = Get_sub_stats();
         UpdateDoors();
 
-        print("Sub stats:\n");
+        //print("Sub stats:\n");
         print("Depth: " + curSub.Depth + "\n");
         print("Temp: " + curSub.Temp + "\n");
         print("Oxygen: " + curSub.Oxygen + "\n");
         print("Front Space: " + curSub.FrontSpace + "\n");
-        print("Inner Door: " + curSub.InnerAirlockPos + "\n"); 
-        print("Inner Lock: " + curSub.InnerAirlockLock + "\n"); 
-        print("Outer Door: " + curSub.OuterAirlockPos + "\n");
-        print("Outer Lock: " + curSub.OuterAirlockLock + "\n");
+        //print("Inner Door: " + curSub.InnerAirlockPos + "\n"); 
+        //print("Inner Lock: " + curSub.InnerAirlockLock + "\n"); 
+        //print("Outer Door: " + curSub.OuterAirlockPos + "\n");
+        //print("Outer Lock: " + curSub.OuterAirlockLock + "\n");
         //print("Firing Array: " + curSub.FiringArray + "\n");
         //print("Ammo Silo: " + curSub.AmmoSilo + "\n");
     }
@@ -238,17 +238,23 @@ public class Submarine : MonoBehaviour {
         Fire_torpedotube_n(n);
 
         bool output = Check_torpedotube_n(n);
-        if (!output && tubeStatus) //if there was a torpedo and now there isn't
+        //TODO replace 15 with a var for safeDist taken from the cwk
+        if (!output && tubeStatus && curSub.FrontSpace > 15) //there was a torpedo and now there isn't and there was enough safe space = success
         {
             print("Successfully fired torpedo. \nTube " + n + ": Empty\n");
         }
-        else if (!tubeStatus) //if there wasn't a torpedo to start with
+        else if (!tubeStatus) //there wasn't a torpedo to start with
         {
             print("Tube " + n + " is empty. Please reload\n"); //TODO - does this curcumstance indicate an error in the coursework? i.e. should I remove this?
         }
-        else if (output) //if there's still a torpedo there
+        else if (output) //there's still a torpedo there
         {
             print("Torpedo was not fired. \nTube " + n + ": Loaded\n");
+        }
+        else if (!output && tubeStatus && curSub.FrontSpace <= 15) //the torpedo has fired but the front space was too small so the sub has exploded
+        {
+            //TODO replace 15 with a var for safeDist taken from the cwk
+            print("Ya dead"); //TODO replace this with the animation
         }
     }
 
