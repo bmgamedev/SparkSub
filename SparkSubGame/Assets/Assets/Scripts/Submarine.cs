@@ -1,9 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class Submarine : MonoBehaviour {
+
+    private float verticalMovement = 0.12f;
+    private float horizontalMovement = 0.22f;
+    private int safeDist;
+    public Text DepthLabel;
+    public Text TempLabel;
+    public Text OxygenLabel;
+    public Text FrontLabel;
+    public Text InnerDoorLabel;
+    public Text OuterDoorLabel;
+    Animator animator;
 
     [DllImport("submarine")]
     private static extern void Sub_dive();
@@ -84,6 +96,8 @@ public class Submarine : MonoBehaviour {
         curSub = Get_sub_stats();
         UpdateDoors();
         PrintStats();
+        animator = GetComponent<Animator>();
+        UpdateUI();
     }
 
     void UpdateDoors() {
@@ -98,6 +112,14 @@ public class Submarine : MonoBehaviour {
         prevSub = Get_sub_stats();
         //So so so much duplication, plz fix soon...
 
+        if (Get_innerairlock_pos() && Get_innerairlock_lock() && Get_outerairlock_pos() && Get_outerairlock_lock())
+        {
+            animator.Play("MovingSub");
+        }
+        else {
+            animator.Play("IdleSub");
+        }
+
         //Do some sub stuff
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
@@ -105,6 +127,7 @@ public class Submarine : MonoBehaviour {
             print("Moving left (back)\n");
             Sub_go_back();
             PrintStats();
+            if (prevSub.FrontSpace < curSub.FrontSpace) { transform.Translate(-horizontalMovement, 0, 0); }
         } 
 		else if (Input.GetKeyUp(KeyCode.RightArrow))
         {
@@ -112,20 +135,26 @@ public class Submarine : MonoBehaviour {
             print("Moving right (forward)\n");
             Sub_go_forward();
             PrintStats();
+            if (prevSub.FrontSpace > curSub.FrontSpace) { transform.Translate(horizontalMovement, 0, 0); }
         } 
 		else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             //dive
             print("Diving\n");
             Sub_dive();
+            //curSub = Get_sub_stats();
             PrintStats();
+            if (prevSub.Depth < curSub.Depth) { transform.Translate(0, -verticalMovement, 0); }
         }
         else if (Input.GetKeyUp(KeyCode.UpArrow))
         {
             //surface
             print("Surfacing\n");
             Sub_surface();
+            //curSub = Get_sub_stats();
             PrintStats();
+            if (prevSub.Depth > curSub.Depth) { transform.Translate(0, verticalMovement, 0); }
+            
         }
         //else if (Input.GetKeyUp(KeyCode.Space))
         //{
@@ -211,6 +240,7 @@ public class Submarine : MonoBehaviour {
             LoadTorpedo(4);
         }
 
+        UpdateUI();
     }
 
     void PrintStats()
@@ -277,5 +307,14 @@ public class Submarine : MonoBehaviour {
         {
             print("Something went wrong. Tube " + n + " is Empty \n");
         }
+    }
+
+    void UpdateUI() {
+        DepthLabel.text = "Depth: " + curSub.Depth;
+        TempLabel.text = "Temp: " + curSub.Temp;
+        OxygenLabel.text = "Oxygen: " + curSub.Oxygen;
+        FrontLabel.text = "Front Space: " + curSub.FrontSpace;
+        InnerDoorLabel.text = "Inner door:  Closed? " + Get_innerairlock_pos() + "  |  Locked? " + Get_innerairlock_lock();
+        OuterDoorLabel.text = "Outer door: Closed? " + Get_outerairlock_pos() + "  |  Locked? " + Get_outerairlock_lock();
     }
 }
