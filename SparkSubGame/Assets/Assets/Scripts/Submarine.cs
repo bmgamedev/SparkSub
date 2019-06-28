@@ -1,18 +1,18 @@
 ﻿using System.Runtime.InteropServices;
 using UnityEngine.UI;
 using UnityEngine;
-
+using UnityEditor;
 
 public class Submarine : MonoBehaviour {
 
     private float verticalMovement = 0.1f;
     private float horizontalMovement = 0.18f;
     private int safeDist;
-    public Text DepthLabel;
-    public Text TempLabel;
-    public Text OxygenLabel;
-    public Text FrontLabel;
-    Animator animator;
+    private Text DepthLabel;
+    private Text TempLabel;
+    private Text OxygenLabel;
+    private Text FrontLabel;
+    private Animator animator;
 
     [DllImport("submarine")]
     private static extern void Sub_dive();
@@ -83,25 +83,34 @@ public class Submarine : MonoBehaviour {
 	[DllImport("submarine")]
     private static extern Sub Get_sub_stats();
 
-    Sub curSub;
-    Sub prevSub;
+    Sub curSub, prevSub;
+
+    bool isPaused;
 
     Sprite DoorOpen, DoorClosed, DoorUnlocked, DoorLocked;
     GameObject[] TorpedoTubes;
     GameObject[] Torpedos;
     //GameObject Tube1Torpedo, Tube2Torpedo, Tube3Torpedo, Tube4Torpedo; //TODO remove once array set up
     GameObject InDoorPos, InDoorLock, OutDoorPos, OutDoorLock;
+    GameObject PauseScreen;
     int curTorpedo;
 
     void Awake()
     {
         //If I get it working, look for the DLL...
 
+
+        isPaused = false;
+
         DoorOpen = Resources.Load<Sprite>("UI_0");
         DoorClosed = Resources.Load<Sprite>("UI_1");
         DoorUnlocked = Resources.Load<Sprite>("UI_2");
         DoorLocked = Resources.Load<Sprite>("UI_3");
 
+        DepthLabel = GameObject.Find("DepthVal").GetComponent<Text>();
+        TempLabel = GameObject.Find("TempVal").GetComponent<Text>();
+        OxygenLabel = GameObject.Find("OxyVal").GetComponent<Text>();
+        FrontLabel = GameObject.Find("FrontVal").GetComponent<Text>();
 
         /*Tube1Torpedo = GameObject.Find("Tube1Ammo");
         Tube2Torpedo = GameObject.Find("Tube2Ammo");
@@ -125,6 +134,9 @@ public class Submarine : MonoBehaviour {
         InDoorLock = GameObject.Find("InDoorLock");
         OutDoorPos = GameObject.Find("OutDoorPos");
         OutDoorLock = GameObject.Find("OutDoorLock");
+
+        PauseScreen = GameObject.Find("PauseScreen");
+        PauseScreen.SetActive(false);
 
         curTorpedo = 25;
 
@@ -169,122 +181,140 @@ public class Submarine : MonoBehaviour {
         }
 
         //Do some sub stuff
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        if (!isPaused)
         {
-            //move sub left
-            print("Moving left (back)\n");
-            Sub_go_back();
-            PrintStats();
-            if (prevSub.FrontSpace < curSub.FrontSpace) { transform.Translate(-horizontalMovement, 0, 0); }
-        } 
-		else if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            //move right
-            print("Moving right (forward)\n");
-            Sub_go_forward();
-            PrintStats();
-            if (prevSub.FrontSpace > curSub.FrontSpace) { transform.Translate(horizontalMovement, 0, 0); }
-        } 
-		else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            //dive
-            print("Diving\n");
-            Sub_dive();
-            //curSub = Get_sub_stats();
-            PrintStats();
-            if (prevSub.Depth < curSub.Depth) { transform.Translate(0, -verticalMovement, 0); }
-        }
-        else if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            //surface
-            print("Surfacing\n");
-            Sub_surface();
-            //curSub = Get_sub_stats();
-            PrintStats();
-            if (prevSub.Depth > curSub.Depth) { transform.Translate(0, verticalMovement, 0); }
-            
-        }
-        //else if (Input.GetKeyUp(KeyCode.Space))
-        //{
-        //    //fire torpedo
-        //}
+            //move the sub
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                //move sub left
+                print("Moving left (back)\n");
+                Sub_go_back();
+                PrintStats();
+                if (prevSub.FrontSpace < curSub.FrontSpace) { transform.Translate(-horizontalMovement, 0, 0); }
+            }
+            else if (Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                //move right
+                print("Moving right (forward)\n");
+                Sub_go_forward();
+                PrintStats();
+                if (prevSub.FrontSpace > curSub.FrontSpace) { transform.Translate(horizontalMovement, 0, 0); }
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                //dive
+                print("Diving\n");
+                Sub_dive();
+                //curSub = Get_sub_stats();
+                PrintStats();
+                if (prevSub.Depth < curSub.Depth) { transform.Translate(0, -verticalMovement, 0); }
+            }
+            else if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                //surface
+                print("Surfacing\n");
+                Sub_surface();
+                //curSub = Get_sub_stats();
+                PrintStats();
+                if (prevSub.Depth > curSub.Depth) { transform.Translate(0, verticalMovement, 0); }
 
-        if (Input.GetKeyUp(KeyCode.Keypad0))
-        {
-            //reset
-            print("Resetting...\n");
-            ResetSub();
+            }
+
+            //Reset the sub
+            if (Input.GetKeyUp(KeyCode.Keypad0))
+            {
+                //reset
+                print("Resetting...\n");
+                ResetSub();
+            }
+
+            //Use the doors
+            if (Input.GetKeyUp(KeyCode.I))
+            {
+                //
+                print("Closing inner door...\n");
+                Close_inner_door();
+                PrintStats();
+            }
+            if (Input.GetKeyUp(KeyCode.K))
+            {
+                //
+                print("Locking inner door...\n");
+                Lock_inner_door();
+                PrintStats();
+            }
+            if (Input.GetKeyUp(KeyCode.O))
+            {
+                //
+                print("Closing outer door...\n");
+                Close_outer_door();
+                PrintStats();
+            }
+            if (Input.GetKeyUp(KeyCode.L))
+            {
+                //
+                print("Locking outer door...\n");
+                Lock_outer_door();
+                PrintStats();
+            }
+
+            //Fire torpedos
+            if (Input.GetKeyUp(KeyCode.Alpha1))
+            {
+                //Fire tube 1
+                FireTorpedo(1);
+            }
+            else if (Input.GetKeyUp(KeyCode.Alpha2))
+            {
+                //Fire tube 2
+                FireTorpedo(2);
+            }
+            else if (Input.GetKeyUp(KeyCode.Alpha3))
+            {
+                //Fire tube 3
+                FireTorpedo(3);
+            }
+            else if (Input.GetKeyUp(KeyCode.Alpha4))
+            {
+                //Fire tube 4
+                FireTorpedo(4);
+            }
+
+            //load torpedos
+            if (Input.GetKeyUp(KeyCode.Q))
+            {
+                //Reload tube 1
+                LoadTorpedo(1);
+            }
+            else if (Input.GetKeyUp(KeyCode.W))
+            {
+                //Reload tube 2
+                LoadTorpedo(2);
+            }
+            else if (Input.GetKeyUp(KeyCode.E))
+            {
+                //Reload tube 3
+                LoadTorpedo(3);
+            }
+            else if (Input.GetKeyUp(KeyCode.R))
+            {
+                //Reload tube 4
+                LoadTorpedo(4);
+            }
         }
 
-        if (Input.GetKeyUp(KeyCode.I))
-        {
-            //
-            print("Closing inner door...\n");
-            Close_inner_door();
-            PrintStats();
-        }
-        if (Input.GetKeyUp(KeyCode.K))
-        {
-            //
-            print("Locking inner door...\n");
-            Lock_inner_door();
-            PrintStats();
-        }
-        if (Input.GetKeyUp(KeyCode.O))
-        {
-            //
-            print("Closing outer door...\n");
-            Close_outer_door();
-            PrintStats();
-        }
-        if (Input.GetKeyUp(KeyCode.L))
-        {
-            //
-            print("Locking outer door...\n");
-            Lock_outer_door();
-            PrintStats();
-        }
-
-        if (Input.GetKeyUp(KeyCode.Alpha1))
-        {
-            //Fire tube 1
-            FireTorpedo(1);
-        }
-        else if (Input.GetKeyUp(KeyCode.Alpha2))
-        {
-            //Fire tube 2
-            FireTorpedo(2);
-        }
-        else if (Input.GetKeyUp(KeyCode.Alpha3))
-        {
-            //Fire tube 3
-            FireTorpedo(3);
-        }
-        else if (Input.GetKeyUp(KeyCode.Alpha4))
-        {
-            //Fire tube 4
-            FireTorpedo(4);
-        }
-
-        if (Input.GetKeyUp(KeyCode.Q))
-        {
-            //Reload tube 1
-            LoadTorpedo(1);
-        }
-        else if (Input.GetKeyUp(KeyCode.W))
-        {
-            //Reload tube 2
-            LoadTorpedo(2);
-        }
-        else if (Input.GetKeyUp(KeyCode.E))
-        {
-            //Reload tube 3
-            LoadTorpedo(3);
-        }
-        else if (Input.GetKeyUp(KeyCode.R))
-        {
-            //Reload tube 4
-            LoadTorpedo(4);
+        if (Input.GetKeyUp(KeyCode.P)) {
+            if (isPaused)
+            {
+                isPaused = false;
+                PauseScreen.SetActive(false);
+                //hide pause screen
+            }
+            else {
+                isPaused = true;
+                PauseScreen.SetActive(true);
+                //TODO when the temp/oxygen is controlled automatically, don't forget to pause it.
+            }
         }
 
         UpdateUI();

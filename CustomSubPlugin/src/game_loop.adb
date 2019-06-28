@@ -142,6 +142,9 @@ package body Game_Loop is
       MySub.OuterAirlockLock := Locked;
       MySub.FiringArray := (others => Loaded);
       MySub.AmmoSilo := (others => Loaded);
+   exception
+   when others =>
+         null;
    end ResetSub;
    -- ------------------------------------------
    
