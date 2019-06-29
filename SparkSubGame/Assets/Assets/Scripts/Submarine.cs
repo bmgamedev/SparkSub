@@ -77,7 +77,7 @@ public class Submarine : MonoBehaviour {
     //Sub specific variables
     Sub curSub, prevSub;
     private Animator animator;
-    Vector3 subPos = new Vector3(-25.28f, 2.88f, 0.0f);
+    Vector3 subPos = new Vector3(-24.66f, 2.88f, 0.0f);
     int curTorpedo = 25, safeDist = 15; //TODO should come from the SPARK coursework in case it changes 
 
     //UI variables
@@ -189,24 +189,28 @@ public class Submarine : MonoBehaviour {
             {
                 //move sub left
                 Sub_go_back();
+                curSub = Get_sub_stats();
                 if (prevSub.FrontSpace < curSub.FrontSpace) { transform.Translate(-horizontalMovement, 0, 0); }
             }
             else if (Input.GetKeyUp(KeyCode.RightArrow))
             {
                 //move right
                 Sub_go_forward();
+                curSub = Get_sub_stats();
                 if (prevSub.FrontSpace > curSub.FrontSpace) { transform.Translate(horizontalMovement, 0, 0); }
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 //dive
                 Sub_dive();
+                curSub = Get_sub_stats();
                 if (prevSub.Depth < curSub.Depth) { transform.Translate(0, -verticalMovement, 0); }
             }
             else if (Input.GetKeyUp(KeyCode.UpArrow))
             {
                 //surface
                 Sub_surface();
+                curSub = Get_sub_stats();
                 if (prevSub.Depth > curSub.Depth) { transform.Translate(0, verticalMovement, 0); }
             }
 
