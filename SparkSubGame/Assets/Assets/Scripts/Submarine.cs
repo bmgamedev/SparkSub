@@ -5,15 +5,7 @@ using UnityEditor;
 
 public class Submarine : MonoBehaviour {
 
-    private float verticalMovement = 0.1f;
-    private float horizontalMovement = 0.18f;
-    private int safeDist;
-    private Text DepthLabel;
-    private Text TempLabel;
-    private Text OxygenLabel;
-    private Text FrontLabel;
-    private Animator animator;
-
+    //SPARK functions
     [DllImport("submarine")]
     private static extern void Sub_dive();
 
@@ -63,7 +55,6 @@ public class Submarine : MonoBehaviour {
     [DllImport("submarine")]
     private static extern bool Check_torpedotube_n(int n);
 
-
     private struct Sub
     {
         public byte Depth;
@@ -83,63 +74,72 @@ public class Submarine : MonoBehaviour {
 	[DllImport("submarine")]
     private static extern Sub Get_sub_stats();
 
+    //Sub specific variables
     Sub curSub, prevSub;
+    private Animator animator;
+    Vector3 subPos = new Vector3(-25.28f, 2.88f, 0.0f);
+    int curTorpedo = 25, safeDist = 15; //TODO should come from the SPARK coursework in case it changes 
 
+    //UI variables
+    private float verticalMovement = 0.1f;
+    private float horizontalMovement = 0.18f;
+    private Text DepthValue;
+    private Text TempValue;
+    private Text OxygenValue;
+    private Text FrontSpaceValue;
     bool isPaused;
+    GameObject PauseScreen;
 
     Sprite DoorOpen, DoorClosed, DoorUnlocked, DoorLocked;
     GameObject[] TorpedoTubes;
     GameObject[] Torpedos;
-    //GameObject Tube1Torpedo, Tube2Torpedo, Tube3Torpedo, Tube4Torpedo; //TODO remove once array set up
     GameObject InDoorPos, InDoorLock, OutDoorPos, OutDoorLock;
-    GameObject PauseScreen;
-    int curTorpedo;
 
     void Awake()
     {
-        //If I get it working, look for the DLL...
-
-
-        isPaused = false;
-
+        //Sprites for the door indicator GameObjects
         DoorOpen = Resources.Load<Sprite>("UI_0");
         DoorClosed = Resources.Load<Sprite>("UI_1");
         DoorUnlocked = Resources.Load<Sprite>("UI_2");
         DoorLocked = Resources.Load<Sprite>("UI_3");
 
-        DepthLabel = GameObject.Find("DepthVal").GetComponent<Text>();
-        TempLabel = GameObject.Find("TempVal").GetComponent<Text>();
-        OxygenLabel = GameObject.Find("OxyVal").GetComponent<Text>();
-        FrontLabel = GameObject.Find("FrontVal").GetComponent<Text>();
-
-        /*Tube1Torpedo = GameObject.Find("Tube1Ammo");
-        Tube2Torpedo = GameObject.Find("Tube2Ammo");
-        Tube3Torpedo = GameObject.Find("Tube3Ammo");
-        Tube4Torpedo = GameObject.Find("Tube4Ammo");*/
-
-        TorpedoTubes = new GameObject[4];
-        TorpedoTubes[0] = GameObject.Find("Tube1Ammo");
-        TorpedoTubes[1] = GameObject.Find("Tube2Ammo");
-        TorpedoTubes[2] = GameObject.Find("Tube3Ammo");
-        TorpedoTubes[3] = GameObject.Find("Tube4Ammo");
-
-        //I realise this looks horrendous but it reduces the amount of "find" calls later on so it's worth it in terms of efficiency
-        Torpedos = new GameObject[25];
-        for (int i = 0; i < 25; i++) {
-            Torpedos[i] = GameObject.Find("Torpedo" + (i+1));
-        }
-        
-
+        //Door indicator GameObjects
         InDoorPos = GameObject.Find("InDoorPos");
         InDoorLock = GameObject.Find("InDoorLock");
         OutDoorPos = GameObject.Find("OutDoorPos");
         OutDoorLock = GameObject.Find("OutDoorLock");
 
+        //Text objects to show the sub stats
+        DepthValue = GameObject.Find("DepthVal").GetComponent<Text>();
+        TempValue = GameObject.Find("TempVal").GetComponent<Text>();
+        OxygenValue = GameObject.Find("OxyVal").GetComponent<Text>();
+        FrontSpaceValue = GameObject.Find("FrontVal").GetComponent<Text>();
+
+        //The torpedo tube ammo GameObjects
+        TorpedoTubes = new GameObject[4];
+        for (int i = 0; i < TorpedoTubes.Length; i++)
+        {
+            TorpedoTubes[i] = GameObject.Find("Tube" + (i + 1) + "Ammo");
+        }
+        //TorpedoTubes[0] = GameObject.Find("Tube1Ammo");
+        //TorpedoTubes[1] = GameObject.Find("Tube2Ammo");
+        //TorpedoTubes[2] = GameObject.Find("Tube3Ammo");
+        //TorpedoTubes[3] = GameObject.Find("Tube4Ammo");
+
+        //The torpedo silo GameObjects
+        //I realise this looks like it's unnecessary and horrendous but it reduces the amount of "find" calls later on so it's worth it in terms of efficiency
+        Torpedos = new GameObject[25];
+        for (int i = 0; i < Torpedos.Length; i++)
+        {
+            Torpedos[i] = GameObject.Find("Torpedo" + (i+1));
+        }
+
+        //Pause screen
         PauseScreen = GameObject.Find("PauseScreen");
         PauseScreen.SetActive(false);
+        isPaused = false;
 
-        curTorpedo = 25;
-
+        //Set Up
         ResetSub();
         curSub = Get_sub_stats();
         UpdateDoors();
@@ -150,11 +150,13 @@ public class Submarine : MonoBehaviour {
     void ResetSub() {
         curTorpedo = 25;
         Sub_reset();
-        transform.position = new Vector3(-7.38f, 2.88f, 0f);
-        for (int i = 0; i < TorpedoTubes.Length; i++) {
+        transform.position = subPos;
+        for (int i = 0; i < TorpedoTubes.Length; i++)
+        {
             TorpedoTubes[i].SetActive(true);
         }
-        for (int i = 0; i < Torpedos.Length; i++) {
+        for (int i = 0; i < Torpedos.Length; i++)
+        {
             Torpedos[i].SetActive(true);
         }
         //PrintStats();
@@ -170,7 +172,6 @@ public class Submarine : MonoBehaviour {
     //called each frame
     void Update () {
         prevSub = Get_sub_stats();
-        //So so so much duplication, plz fix soon...
 
         if (Get_innerairlock_pos() && Get_innerairlock_lock() && Get_outerairlock_pos() && Get_outerairlock_lock())
         {
@@ -187,37 +188,26 @@ public class Submarine : MonoBehaviour {
             if (Input.GetKeyUp(KeyCode.LeftArrow))
             {
                 //move sub left
-                print("Moving left (back)\n");
                 Sub_go_back();
-                PrintStats();
                 if (prevSub.FrontSpace < curSub.FrontSpace) { transform.Translate(-horizontalMovement, 0, 0); }
             }
             else if (Input.GetKeyUp(KeyCode.RightArrow))
             {
                 //move right
-                print("Moving right (forward)\n");
                 Sub_go_forward();
-                PrintStats();
                 if (prevSub.FrontSpace > curSub.FrontSpace) { transform.Translate(horizontalMovement, 0, 0); }
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 //dive
-                print("Diving\n");
                 Sub_dive();
-                //curSub = Get_sub_stats();
-                PrintStats();
                 if (prevSub.Depth < curSub.Depth) { transform.Translate(0, -verticalMovement, 0); }
             }
             else if (Input.GetKeyUp(KeyCode.UpArrow))
             {
                 //surface
-                print("Surfacing\n");
                 Sub_surface();
-                //curSub = Get_sub_stats();
-                PrintStats();
                 if (prevSub.Depth > curSub.Depth) { transform.Translate(0, verticalMovement, 0); }
-
             }
 
             //Reset the sub
@@ -231,31 +221,23 @@ public class Submarine : MonoBehaviour {
             //Use the doors
             if (Input.GetKeyUp(KeyCode.I))
             {
-                //
-                print("Closing inner door...\n");
+                //print("Closing inner door...\n");
                 Close_inner_door();
-                PrintStats();
             }
             if (Input.GetKeyUp(KeyCode.K))
             {
-                //
-                print("Locking inner door...\n");
+                //print("Locking inner door...\n");
                 Lock_inner_door();
-                PrintStats();
             }
             if (Input.GetKeyUp(KeyCode.O))
             {
-                //
-                print("Closing outer door...\n");
+                //print("Closing outer door...\n");
                 Close_outer_door();
-                PrintStats();
             }
             if (Input.GetKeyUp(KeyCode.L))
             {
-                //
-                print("Locking outer door...\n");
+                //print("Locking outer door...\n");
                 Lock_outer_door();
-                PrintStats();
             }
 
             //Fire torpedos
@@ -306,11 +288,12 @@ public class Submarine : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.P)) {
             if (isPaused)
             {
+                //if already paused then unpause
                 isPaused = false;
                 PauseScreen.SetActive(false);
-                //hide pause screen
             }
             else {
+                //pause the screen
                 isPaused = true;
                 PauseScreen.SetActive(true);
                 //TODO when the temp/oxygen is controlled automatically, don't forget to pause it.
@@ -320,7 +303,7 @@ public class Submarine : MonoBehaviour {
         UpdateUI();
     }
 
-    void PrintStats()
+    /*void PrintStats()
     {
 
         curSub = Get_sub_stats();
@@ -337,36 +320,22 @@ public class Submarine : MonoBehaviour {
         //print("Outer Lock: " + curSub.OuterAirlockLock + "\n");
         //print("Firing Array: " + curSub.FiringArray + "\n");
         //print("Ammo Silo: " + curSub.AmmoSilo + "\n");
-    }
+    }*/
 
     void FireTorpedo(int n) {
-        bool tubeStatus = Check_torpedotube_n(n); //true = torpedo to be fired is there
+        bool tubeLoaded = Check_torpedotube_n(n); //true = torpedo to be fired is there
+        bool wasFired = false;
 
         Fire_torpedotube_n(n);
 
         bool output = Check_torpedotube_n(n);
-        //TODO replace 15 with a var for safeDist taken from the cwk
-        if (!output && tubeStatus && curSub.FrontSpace > 15) //there was a torpedo and now there isn't and there was enough safe space = success
+        if (!output && tubeLoaded && curSub.FrontSpace > safeDist) //there was a torpedo and now there isn't and there was enough safe space = success
         {
             print("Successfully fired torpedo. \nTube " + n + ": Empty\n");
             TorpedoTubes[n - 1].SetActive(false);
-            /*switch (n)
-            {
-                case 1:
-                    Tube1Torpedo.SetActive(false);
-                    break;
-                case 2:
-                    Tube2Torpedo.SetActive(false);
-                    break;
-                case 3:
-                    Tube3Torpedo.SetActive(false);
-                    break;
-                default:
-                    Tube4Torpedo.SetActive(false);
-                    break;
-            }*/
+            wasFired = true;
         }
-        else if (!tubeStatus) //there wasn't a torpedo to start with
+        else if (!tubeLoaded) //there wasn't a torpedo to start with
         {
             print("Tube " + n + " is empty. Please reload\n"); //TODO - does this curcumstance indicate an error in the coursework? i.e. should I remove this?
         }
@@ -374,10 +343,15 @@ public class Submarine : MonoBehaviour {
         {
             print("Torpedo was not fired. \nTube " + n + ": Loaded\n");
         }
-        else if (!output && tubeStatus && curSub.FrontSpace <= 15) //the torpedo has fired but the front space was too small so the sub has exploded
+        else if (!output && tubeLoaded && curSub.FrontSpace <= safeDist) //the torpedo has fired but the front space was too small so the sub has exploded
         {
-            //TODO replace 15 with a var for safeDist taken from the cwk
             print("Ya dead"); //TODO replace this with the animation
+            wasFired = true;
+        }
+
+        if (wasFired) {
+            Instantiate(Resources.Load("TorpedoPrefab"), transform.GetChild(0).transform.position, Quaternion.identity);
+            wasFired = false;
         }
     }
 
@@ -396,26 +370,8 @@ public class Submarine : MonoBehaviour {
         {
             print("Tube " + n + " is Loaded\n");
             TorpedoTubes[n - 1].SetActive(true);
-            /*switch (n)
-            {
-                case 1:
-                    Tube1Torpedo.SetActive(true);
-                    break;
-                case 2:
-                    Tube2Torpedo.SetActive(true);
-                    break;
-                case 3:
-                    Tube3Torpedo.SetActive(true);
-                    break;
-                default:
-                    Tube4Torpedo.SetActive(true);
-                    break;
-            }*/
-
-            //GameObject torpedo = GameObject.Find("Torpedo"+curTorpedo);
             Torpedos[curTorpedo-1].SetActive(false);
             curTorpedo--;
-
         }
         else if (!output) //there is no torpedo
         {
@@ -461,14 +417,14 @@ public class Submarine : MonoBehaviour {
             OutDoorLock.GetComponent<SpriteRenderer>().sprite = DoorUnlocked;
         }
 
-        //bool Get_innerairlock_pos() ? InDoorLock = "" : InDoorLock = ""; //what are the downsides to updating this project to c# 7?
 
-        DepthLabel.text = curSub.Depth.ToString();
-        TempLabel.text = curSub.Temp.ToString();
-        OxygenLabel.text = curSub.Oxygen.ToString();
-        FrontLabel.text = curSub.FrontSpace.ToString();
+        //TODO what are the downsides to updating this project to c# 7? MEans I can use a ternary operator for the above...
+        //bool Get_innerairlock_pos() ? InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorClosed : InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorOpen; 
+
+        DepthValue.text = curSub.Depth.ToString();
+        TempValue.text = curSub.Temp.ToString();
+        OxygenValue.text = curSub.Oxygen.ToString();
+        FrontSpaceValue.text = curSub.FrontSpace.ToString();
     }
-
-   
 
 }
