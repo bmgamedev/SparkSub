@@ -79,6 +79,7 @@ public class Submarine : MonoBehaviour {
     private Animator animator;
     Vector3 subPos = new Vector3(-24.66f, 2.88f, 0.0f);
     int curTorpedo = 25, safeDist = 15; //TODO should come from the SPARK coursework in case it changes 
+    public bool isAlive;
 
     //UI variables
     private float verticalMovement = 0.1f;
@@ -144,6 +145,7 @@ public class Submarine : MonoBehaviour {
         curSub = Get_sub_stats();
         UpdateDoors();
         animator = GetComponent<Animator>();
+        isAlive = true;
         UpdateUI();
     }
 
@@ -182,7 +184,7 @@ public class Submarine : MonoBehaviour {
         }
 
         //Do some sub stuff
-        if (!isPaused)
+        if (!isPaused && isAlive)
         {
             //move the sub
             if (Input.GetKeyUp(KeyCode.LeftArrow))
@@ -244,47 +246,39 @@ public class Submarine : MonoBehaviour {
                 Lock_outer_door();
             }
 
-            //Fire torpedos
+            //Fire torpedos (tube num)
             if (Input.GetKeyUp(KeyCode.Alpha1))
             {
-                //Fire tube 1
                 FireTorpedo(1);
             }
             else if (Input.GetKeyUp(KeyCode.Alpha2))
             {
-                //Fire tube 2
                 FireTorpedo(2);
             }
             else if (Input.GetKeyUp(KeyCode.Alpha3))
             {
-                //Fire tube 3
                 FireTorpedo(3);
             }
             else if (Input.GetKeyUp(KeyCode.Alpha4))
             {
-                //Fire tube 4
                 FireTorpedo(4);
             }
 
-            //load torpedos
+            //load torpedos (tube num)
             if (Input.GetKeyUp(KeyCode.Q))
             {
-                //Reload tube 1
                 LoadTorpedo(1);
             }
             else if (Input.GetKeyUp(KeyCode.W))
             {
-                //Reload tube 2
                 LoadTorpedo(2);
             }
             else if (Input.GetKeyUp(KeyCode.E))
             {
-                //Reload tube 3
                 LoadTorpedo(3);
             }
             else if (Input.GetKeyUp(KeyCode.R))
             {
-                //Reload tube 4
                 LoadTorpedo(4);
             }
         }
@@ -333,7 +327,7 @@ public class Submarine : MonoBehaviour {
         Fire_torpedotube_n(n);
 
         bool output = Check_torpedotube_n(n);
-        if (!output && tubeLoaded && curSub.FrontSpace > safeDist) //there was a torpedo and now there isn't and there was enough safe space = success
+        /*if (!output && tubeLoaded && curSub.FrontSpace > safeDist) //there was a torpedo and now there isn't and there was enough safe space = success
         {
             print("Successfully fired torpedo. \nTube " + n + ": Empty\n");
             TorpedoTubes[n - 1].SetActive(false);
@@ -350,7 +344,19 @@ public class Submarine : MonoBehaviour {
         else if (!output && tubeLoaded && curSub.FrontSpace <= safeDist) //the torpedo has fired but the front space was too small so the sub has exploded
         {
             print("Ya dead"); //TODO replace this with the animation
-            wasFired = true;
+            animator.Play("SubExplode");
+            Destroy(gameObject, 1.0f);
+            //game over screen
+            //wasFired = true;
+        }*/
+
+        if (!output && tubeLoaded && curSub.FrontSpace <= 90) //test
+        {
+            isAlive = false;
+            animator.transform.position = gameObject.transform.position;
+            //animator.Play("SubExplode");
+            animator.SetBool("isAlive", isAlive);
+            Destroy(gameObject, 2.0f);
         }
 
         if (wasFired) {
