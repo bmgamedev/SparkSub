@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Submarine : MonoBehaviour {
 
@@ -310,25 +311,6 @@ public class Submarine : MonoBehaviour {
         UpdateUI();
     }
 
-    /*void PrintStats()
-    {
-
-        curSub = Get_sub_stats();
-        UpdateDoors();
-
-        //print("Sub stats:\n");
-        print("Depth: " + curSub.Depth + "\n");
-        print("Temp: " + curSub.Temp + "\n");
-        print("Oxygen: " + curSub.Oxygen + "\n");
-        print("Front Space: " + curSub.FrontSpace + "\n");
-        //print("Inner Door: " + curSub.InnerAirlockPos + "\n"); 
-        //print("Inner Lock: " + curSub.InnerAirlockLock + "\n"); 
-        //print("Outer Door: " + curSub.OuterAirlockPos + "\n");
-        //print("Outer Lock: " + curSub.OuterAirlockLock + "\n");
-        //print("Firing Array: " + curSub.FiringArray + "\n");
-        //print("Ammo Silo: " + curSub.AmmoSilo + "\n");
-    }*/
-
     void FireTorpedo(int n) {
         bool tubeLoaded = Check_torpedotube_n(n); //true = torpedo to be fired is there
         bool wasFired = false;
@@ -354,6 +336,7 @@ public class Submarine : MonoBehaviour {
         {
             print("Ya dead");
             wasFired = true;
+            PlayerPrefs.SetString("PlayerDeath", "A torpedo exploded too close to the sub.");
             StartCoroutine(TriggerSelfDestruct());
         }
 
@@ -369,7 +352,8 @@ public class Submarine : MonoBehaviour {
         isAlive = false;
         animator.SetBool("isAlive", isAlive);
         yield return new WaitForSeconds(2.5f);
-        print("game over\n");
+        //print("game over\n");
+        SceneManager.LoadScene("GameOver");
     }
 
 
