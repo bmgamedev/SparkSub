@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEditor;
+using System.Collections;
 
 public class Submarine : MonoBehaviour {
 
@@ -79,7 +80,7 @@ public class Submarine : MonoBehaviour {
     private Animator animator;
     Vector3 subPos = new Vector3(-24.66f, 2.88f, 0.0f);
     int curTorpedo = 25, safeDist = 15; //TODO should come from the SPARK coursework in case it changes 
-    public bool isAlive;
+    public bool isAlive, isReady;
 
     //UI variables
     private float verticalMovement = 0.1f;
@@ -146,7 +147,9 @@ public class Submarine : MonoBehaviour {
         UpdateDoors();
         animator = GetComponent<Animator>();
         isAlive = true;
+        isReady = false;
         UpdateUI();
+
     }
 
     void ResetSub() {
@@ -175,13 +178,16 @@ public class Submarine : MonoBehaviour {
     void Update () {
         prevSub = Get_sub_stats();
 
-        if (Get_innerairlock_pos() && Get_innerairlock_lock() && Get_outerairlock_pos() && Get_outerairlock_lock())
+        if (!Get_innerairlock_pos() || !Get_innerairlock_lock() || !Get_outerairlock_pos() || !Get_outerairlock_lock())
         {
-            animator.Play("MovingSub");
+            isReady = false;
+            
         }
         else {
-            animator.Play("IdleSub");
+            isReady = true;
         }
+        animator.SetBool("isReady", isReady);
+        animator.SetBool("isAlive", isAlive);
 
         //Do some sub stuff
         if (!isPaused && isAlive)
@@ -327,7 +333,7 @@ public class Submarine : MonoBehaviour {
         Fire_torpedotube_n(n);
 
         bool output = Check_torpedotube_n(n);
-        /*if (!output && tubeLoaded && curSub.FrontSpace > safeDist) //there was a torpedo and now there isn't and there was enough safe space = success
+        if (!output && tubeLoaded && curSub.FrontSpace > safeDist) //there was a torpedo and now there isn't and there was enough safe space = success
         {
             print("Successfully fired torpedo. \nTube " + n + ": Empty\n");
             TorpedoTubes[n - 1].SetActive(false);
@@ -343,20 +349,9 @@ public class Submarine : MonoBehaviour {
         }
         else if (!output && tubeLoaded && curSub.FrontSpace <= safeDist) //the torpedo has fired but the front space was too small so the sub has exploded
         {
-            print("Ya dead"); //TODO replace this with the animation
-            animator.Play("SubExplode");
-            Destroy(gameObject, 1.0f);
-            //game over screen
-            //wasFired = true;
-        }*/
-
-        if (!output && tubeLoaded && curSub.FrontSpace <= 90) //test
-        {
-            isAlive = false;
-            animator.transform.position = gameObject.transform.position;
-            //animator.Play("SubExplode");
-            animator.SetBool("isAlive", isAlive);
-            Destroy(gameObject, 2.0f);
+            print("Ya dead");
+            wasFired = true;
+            StartCoroutine(TriggerSelfDestruct());
         }
 
         if (wasFired) {
@@ -364,6 +359,16 @@ public class Submarine : MonoBehaviour {
             wasFired = false;
         }
     }
+
+    IEnumerator TriggerSelfDestruct()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isAlive = false;
+        animator.SetBool("isAlive", isAlive);
+        yield return new WaitForSeconds(2.5f);
+        print("game over\n");
+    }
+
 
     void LoadTorpedo(int n) {
         bool tubeStatus = Check_torpedotube_n(n); //true = the tube is currently loaded
