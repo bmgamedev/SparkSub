@@ -7,11 +7,11 @@ using UnityEngine.UI;
 
 public class Button : MonoBehaviour, ISelectHandler, IDeselectHandler //ISelectHandler/IDeselectHandler required for onSelect/onDeselect
 {
-    GameObject defaultSelection;
+    public GameObject defaultSelection;
 
     void Awake()
     {
-        defaultSelection = GameObject.Find("Start");
+        //defaultSelection = GameObject.Find("Start");
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }

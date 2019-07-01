@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a35d66526e9c84f960c209340b58f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultSelection: {fileID: 1018098107}
 --- !u!4 &766667299
 Transform:
   m_ObjectHideFlags: 0
@@ -388,6 +389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a35d66526e9c84f960c209340b58f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultSelection: {fileID: 1018098107}
 --- !u!1 &1427555672
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,9 +546,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 2
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_Mode: 4
+    m_SelectOnUp: {fileID: 1018098111}
+    m_SelectOnDown: {fileID: 1534170234}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -566,7 +568,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
 --- !u!1 &1534170231
 GameObject:
@@ -616,6 +618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a35d66526e9c84f960c209340b58f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultSelection: {fileID: 1018098107}
 --- !u!114 &1534170234
 MonoBehaviour:
   m_ObjectHideFlags: 0
