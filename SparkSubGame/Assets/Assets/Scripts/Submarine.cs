@@ -99,6 +99,9 @@ public class Submarine : MonoBehaviour {
 
     void Awake()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; //This would be better in a game manager script but it's the only thing I would have in it for this game right now.
+
         //Sprites for the door indicator GameObjects
         DoorOpen = Resources.Load<Sprite>("UI_0");
         DoorClosed = Resources.Load<Sprite>("UI_1");
