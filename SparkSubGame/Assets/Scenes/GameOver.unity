@@ -219,6 +219,7 @@ GameObject:
   - component: {fileID: 519167238}
   - component: {fileID: 519167240}
   - component: {fileID: 519167239}
+  - component: {fileID: 519167241}
   m_Layer: 5
   m_Name: Blurb
   m_TagString: Untagged
@@ -283,6 +284,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 519167237}
+--- !u!114 &519167241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 519167237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e1170b5aa423654f9cb410408b25143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &766667297
 GameObject:
   m_ObjectHideFlags: 0
