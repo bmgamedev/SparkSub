@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEditor.Animations;
 
 public class Submarine : MonoBehaviour {
 
@@ -216,7 +217,12 @@ public class Submarine : MonoBehaviour {
                 //dive
                 Sub_dive();
                 curSub = Get_sub_stats();
-                if (prevSub.Depth < curSub.Depth) { transform.Translate(0, -verticalMovement, 0); }
+                if (curSub.Depth > 100 && prevSub.Depth < curSub.Depth) {
+                    transform.Translate(0, -verticalMovement, 0);
+                    Vector3 targetPos = transform.position - new Vector3(0.0f, 2.5f, 0.0f);
+                    StartCoroutine(TriggerImplosion(targetPos));
+                }
+                else if (prevSub.Depth < curSub.Depth) { transform.Translate(0, -verticalMovement, 0); }
             }
             else if (Input.GetKeyUp(KeyCode.UpArrow))
             {
@@ -293,6 +299,12 @@ public class Submarine : MonoBehaviour {
             }
         }
 
+        /* FOR TESTING PURPOSES
+        if (Input.GetKeyUp(KeyCode.T)) {
+            Vector3 targetPos = transform.position - new Vector3(0.0f, 2.5f, 0.0f);
+            StartCoroutine(TriggerImplosion(targetPos));
+        }*/
+
         if (Input.GetKeyUp(KeyCode.P)) {
             if (isPaused)
             {
@@ -333,11 +345,12 @@ public class Submarine : MonoBehaviour {
             print("Torpedo was not fired. \nTube " + n + ": Loaded\n");
         }
         else if (!output && tubeLoaded && curSub.FrontSpace <= safeDist) //the torpedo has fired but the front space was too small so the sub has exploded
+        //if (!output && tubeLoaded && curSub.FrontSpace <= 95) //for testing
         {
             print("Ya dead");
             wasFired = true;
             PlayerPrefs.SetString("PlayerDeath", "A torpedo exploded too close to the sub.");
-            StartCoroutine(TriggerSelfDestruct());
+            StartCoroutine(TriggerExplosion());
         }
 
         if (wasFired) {
@@ -346,11 +359,31 @@ public class Submarine : MonoBehaviour {
         }
     }
 
-    IEnumerator TriggerSelfDestruct()
+    IEnumerator TriggerImplosion(Vector3 targetPos)
+    {
+        isAlive = false;
+        animator.SetBool("hasImploded", !isAlive);
+     
+        yield return new WaitForSeconds(0.35f);
+        float dist = Vector3.Distance(transform.position, targetPos);
+        
+        while (dist > 0.5f)
+        {
+            //print(dist + "\n");
+            transform.position = Vector3.MoveTowards(transform.position, transform.position - new Vector3(0.0f, 10.0f, 0.0f), 0.07f);//speed * Time.deltaTime);
+            dist = Vector3.Distance(transform.position, targetPos);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        print("game over\n");
+        SceneManager.LoadScene("GameOver");
+    }
+
+    IEnumerator TriggerExplosion()
     {
         yield return new WaitForSeconds(0.5f);
         isAlive = false;
-        animator.SetBool("isAlive", isAlive);
+        animator.SetBool("hasExploded", !isAlive);
         yield return new WaitForSeconds(2.5f);
         //print("game over\n");
         SceneManager.LoadScene("GameOver");
