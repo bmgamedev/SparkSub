@@ -80,6 +80,8 @@ public class Submarine : MonoBehaviour {
     //Sub specific variables
     Sub curSub, prevSub;
     private Animator animator;
+    AudioSource audioSource;
+    public AudioClip doorSFX, torpedoSFX, implosionSFX, reloadSFX;
     Vector3 subPos = new Vector3(-24.66f, 2.88f, 0.0f);
     int curTorpedo = 25, safeDist = 15; //TODO should come from the SPARK coursework in case it changes 
     public bool isAlive, isReady;
@@ -146,11 +148,16 @@ public class Submarine : MonoBehaviour {
         PauseScreen.SetActive(false);
         isPaused = false;
 
+        //Animations
+        animator = GetComponent<Animator>();
+
+        //sounds
+        audioSource = GetComponent<AudioSource>();
+
         //Set Up
         ResetSub();
         curSub = Get_sub_stats();
         UpdateDoors();
-        animator = GetComponent<Animator>();
         isAlive = true;
         isReady = false;
         UpdateUI();
@@ -244,21 +251,25 @@ public class Submarine : MonoBehaviour {
             if (Input.GetKeyUp(KeyCode.I))
             {
                 //print("Closing inner door...\n");
+                audioSource.PlayOneShot(doorSFX);
                 Close_inner_door();
             }
             if (Input.GetKeyUp(KeyCode.K))
             {
                 //print("Locking inner door...\n");
+                audioSource.PlayOneShot(doorSFX);
                 Lock_inner_door();
             }
             if (Input.GetKeyUp(KeyCode.O))
             {
                 //print("Closing outer door...\n");
+                audioSource.PlayOneShot(doorSFX);
                 Close_outer_door();
             }
             if (Input.GetKeyUp(KeyCode.L))
             {
                 //print("Locking outer door...\n");
+                audioSource.PlayOneShot(doorSFX);
                 Lock_outer_door();
             }
 
@@ -333,6 +344,7 @@ public class Submarine : MonoBehaviour {
         bool output = Check_torpedotube_n(n);
         if (!output && tubeLoaded && curSub.FrontSpace > safeDist) //there was a torpedo and now there isn't and there was enough safe space = success
         {
+            audioSource.PlayOneShot(torpedoSFX);
             print("Successfully fired torpedo. \nTube " + n + ": Empty\n");
             TorpedoTubes[n - 1].SetActive(false);
             wasFired = true;
@@ -364,7 +376,8 @@ public class Submarine : MonoBehaviour {
     {
         isAlive = false;
         animator.SetBool("hasImploded", !isAlive);
-     
+        audioSource.PlayOneShot(implosionSFX);
+
         yield return new WaitForSeconds(0.35f);
         float dist = Vector3.Distance(transform.position, targetPos);
         
@@ -404,6 +417,7 @@ public class Submarine : MonoBehaviour {
         }
         else if (output) //there is a torpedo
         {
+            audioSource.PlayOneShot(reloadSFX);
             print("Tube " + n + " is Loaded\n");
             TorpedoTubes[n - 1].SetActive(true);
             Torpedos[curTorpedo-1].SetActive(false);
