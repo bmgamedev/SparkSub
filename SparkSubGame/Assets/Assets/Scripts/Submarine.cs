@@ -299,11 +299,12 @@ public class Submarine : MonoBehaviour {
             }
         }
 
-        /* FOR TESTING PURPOSES
+        // FOR TESTING PURPOSES 
         if (Input.GetKeyUp(KeyCode.T)) {
             Vector3 targetPos = transform.position - new Vector3(0.0f, 2.5f, 0.0f);
             StartCoroutine(TriggerImplosion(targetPos));
-        }*/
+            //StartCoroutine(TriggerExplosion());
+        }
 
         if (Input.GetKeyUp(KeyCode.P)) {
             if (isPaused)
