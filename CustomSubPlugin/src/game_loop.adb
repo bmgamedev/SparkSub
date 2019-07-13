@@ -1,5 +1,5 @@
-with Ada.Real_Time; use Ada.Real_Time;
-with Interfaces; use Interfaces;
+--with Ada.Real_Time; use Ada.Real_Time;
+--with Interfaces; use Interfaces;
 
 package body Game_Loop is
 
@@ -35,30 +35,12 @@ package body Game_Loop is
          null;
    end SubGoBack;
    
-   
-   -- ---------------
-   -- Emergency surface...
-   -- procedure since it's not returning a value, right?
-   
-   procedure SubEmergencySurface is
-   begin
-		 EmergencySurface;
-   exception
-   when others =>
-         null;
-   end SubEmergencySurface;
-   -- Still think I need a way to tell the game when this is happening 
-   -- so that it can make it clear to the user and stop user input until complete
-   
-   
-
-   
    function GetSubStats return Sub is
    begin
       return MySub;
    exception
       when others =>
-         return (others => <>); --What's this?
+         return (others => <>);
    end GetSubStats;
 
    function GetSubInnerAirlockPos return CSharp_Bool is
@@ -97,16 +79,9 @@ package body Game_Loop is
 	 end if;
    end GetSubOuterAirlockLock;
    
-   --procedure SetUpForTesting is 
-   --begin
-	--	 CloseInner;
-	--	 CloseOuter;
-	--	 MySub.InnerAirlockLock := Locked;
-  -- end SetUpForTesting;
-   
    procedure CloseInnerDoor is
    begin
-         CloseInner;
+         ToggleInner;
    exception
    when others =>
          null;
@@ -114,12 +89,19 @@ package body Game_Loop is
    
    procedure CloseOuterDoor is
    begin
-     CloseOuter;
+     ToggleOuter;
+   exception
+   when others =>
+         null;
    end CloseOuterDoor;
    
    procedure LockInnerDoor is
    begin
-         MySub.InnerAirlockLock := Locked;
+	 if MySub.InnerAirlockLock = Unlocked then
+	   MySub.InnerAirlockLock := Locked;
+	 else
+	   MySub.InnerAirlockLock := Unlocked;
+	 end if;
    exception
    when others =>
          null;
@@ -127,7 +109,14 @@ package body Game_Loop is
    
    procedure LockOuterDoor is
    begin
-     MySub.OuterAirlockLock := Locked;
+   	 if MySub.OuterAirlockLock = Unlocked then
+	   MySub.OuterAirlockLock := Locked;
+	 else
+	   MySub.OuterAirlockLock := Unlocked;
+	 end if;
+   exception
+   when others =>
+         null;
    end LockOuterDoor;
    
    procedure ResetSub is
@@ -135,6 +124,7 @@ package body Game_Loop is
       MySub.Depth := 0;
       MySub.Temp := 0;
       MySub.Oxygen := 100;
+	  MySub.Emergency := False;
       MySub.FrontSpace := 100;
       MySub.InnerAirlockPos := Open;
       MySub.InnerAirlockLock := Unlocked;
@@ -146,11 +136,6 @@ package body Game_Loop is
    when others =>
          null;
    end ResetSub;
-   -- ------------------------------------------
-   
-   --still to do:
-   -- Firing and reloading. Started but not working.
-   
    
    function CheckTorpedoTubeN (n : Tube) return CSharp_Bool is
    begin
@@ -172,19 +157,6 @@ package body Game_Loop is
          null;
    end FireTorpedoTubeN;
    
-   --function LoadTorpedoTubeN (n : Tube) return CSharp_Bool is
-   --begin
-	-- Load(n);
-	-- if MySub.FiringArray(n) = Loaded then
-	--   return True; --it was a success
-	-- else
-	--   return False;
-	-- end if;
-   --exception
-   --   when others =>
-    --     return False;
-   --end LoadTorpedoTubeN;
-   
    procedure LoadTorpedoTubeN (n : Tube) is
    begin
 	 Load(n);
@@ -193,5 +165,40 @@ package body Game_Loop is
          null;
    end LoadTorpedoTubeN;
    
+   procedure UpdateOxygen is
+   begin
+	 MySub.Oxygen := MySub.Oxygen-1;
+   exception
+   when others =>
+         null;
+   end UpdateOxygen;
+   
+   procedure UpdateTemperature (x : TempRange) is
+   begin
+	 MySub.Temp := x;
+   exception
+   when others =>
+         null;
+   end UpdateTemperature;
+   
+   procedure StopEmergencySurface is
+   begin
+	 MySub.Emergency := False;
+	 MySub.Depth := 0;
+	 EmergencySurface;
+   exception
+   when others =>
+         null;
+   end StopEmergencySurface;
+   
+   --function CheckEmergency return CSharp_Bool is
+   function CheckEmergency return Boolean is
+   begin
+	 Emergency;
+	 return MySub.Emergency;
+   exception
+   when others =>
+         return False;
+   end CheckEmergency;
    
 end Game_Loop;

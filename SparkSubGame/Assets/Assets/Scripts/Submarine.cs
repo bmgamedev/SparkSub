@@ -53,16 +53,32 @@ public class Submarine : MonoBehaviour {
 
     [DllImport("submarine")]
     private static extern void Fire_torpedotube_n(int n);
+
     [DllImport("submarine")]
     private static extern void Load_torpedotube_n(int n);
+
     [DllImport("submarine")]
     private static extern bool Check_torpedotube_n(int n);
+
+    [DllImport("submarine")]
+    private static extern void Update_oxygen();
+
+    [DllImport("submarine")]
+    private static extern void Update_temperature(int x);
+
+    [DllImport("submarine")]
+    private static extern void Stop_emergency_surface();
+
+    [DllImport("submarine")]
+    private static extern bool Check_emergency();
+
 
     private struct Sub
     {
         public byte Depth;
         public byte Temp;
         public byte Oxygen;
+        public byte EmergencyStatus;
         public byte FrontSpace;
 
 		public bool InnerAirlockPos; 
@@ -84,7 +100,7 @@ public class Submarine : MonoBehaviour {
     public AudioClip doorSFX, torpedoSFX, implosionSFX, reloadSFX;
     Vector3 subPos = new Vector3(-24.66f, 2.88f, 0.0f);
     int curTorpedo = 25, safeDist = 15; //TODO should come from the SPARK coursework in case it changes 
-    public bool isAlive, isReady;
+    public bool isAlive, isReady, isSurfacing;
 
     //UI variables
     private float verticalMovement = 0.1f;
@@ -130,13 +146,9 @@ public class Submarine : MonoBehaviour {
         {
             TorpedoTubes[i] = GameObject.Find("Tube" + (i + 1) + "Ammo");
         }
-        //TorpedoTubes[0] = GameObject.Find("Tube1Ammo");
-        //TorpedoTubes[1] = GameObject.Find("Tube2Ammo");
-        //TorpedoTubes[2] = GameObject.Find("Tube3Ammo");
-        //TorpedoTubes[3] = GameObject.Find("Tube4Ammo");
 
         //The torpedo silo GameObjects
-        //I realise this looks like it's unnecessary and horrendous but it reduces the amount of "find" calls later on so it's worth it in terms of efficiency
+        //I realise this looks like it's unnecessary but it reduces the amount of "find" calls later on so it's worth it in terms of efficiency
         Torpedos = new GameObject[25];
         for (int i = 0; i < Torpedos.Length; i++)
         {
@@ -160,7 +172,12 @@ public class Submarine : MonoBehaviour {
         UpdateDoors();
         isAlive = true;
         isReady = false;
+        isSurfacing = false;
         UpdateUI();
+
+        //reduce the oxygen steadily
+        //StartCoroutine("UpdateOxygen");
+        InvokeRepeating("UpdateOxygen", 3.0f,3.0f);
 
     }
 
@@ -176,7 +193,6 @@ public class Submarine : MonoBehaviour {
         {
             Torpedos[i].SetActive(true);
         }
-        //PrintStats();
     }
 
     void UpdateDoors() {
@@ -186,8 +202,9 @@ public class Submarine : MonoBehaviour {
         curSub.OuterAirlockLock = Get_outerairlock_lock();
     }
 
-    //called each frame
     void Update () {
+        print("emergency sub stat: " + curSub.EmergencyStatus);
+
         prevSub = Get_sub_stats();
 
         if (!Get_innerairlock_pos() || !Get_innerairlock_lock() || !Get_outerairlock_pos() || !Get_outerairlock_lock())
@@ -201,9 +218,26 @@ public class Submarine : MonoBehaviour {
         animator.SetBool("isReady", isReady);
         animator.SetBool("isAlive", isAlive);
 
-        //Do some sub stuff
-        if (!isPaused && isAlive)
+        //check for emergency surface
+        if (Check_emergency())
         {
+            if (transform.position.y != subPos.y)
+            {
+                print("pos is: " + transform.position.y + ", should be: " + subPos.y);
+                isSurfacing = true;
+                transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, subPos.y), 1.0f * Time.deltaTime);
+            }
+            else {
+                Stop_emergency_surface();
+                isSurfacing = false;
+            }
+        }
+
+        //Do some sub stuff
+        if (!isPaused && isAlive && !isSurfacing)
+        {
+            
+
             //move the sub
             if (Input.GetKeyUp(KeyCode.LeftArrow))
             {
@@ -312,12 +346,15 @@ public class Submarine : MonoBehaviour {
 
         // FOR TESTING PURPOSES 
         if (Input.GetKeyUp(KeyCode.T)) {
-            Vector3 targetPos = transform.position - new Vector3(0.0f, 2.5f, 0.0f);
-            StartCoroutine(TriggerImplosion(targetPos));
+            //Vector3 targetPos = transform.position - new Vector3(0.0f, 2.5f, 0.0f);
+            //StartCoroutine(TriggerImplosion(targetPos));
+
             //StartCoroutine(TriggerExplosion());
+
+            isSurfacing = true;
         }
 
-        if (Input.GetKeyUp(KeyCode.P)) {
+        if (Input.GetKeyUp(KeyCode.P) && !isSurfacing) {
             if (isPaused)
             {
                 //if already paused then unpause
@@ -351,7 +388,7 @@ public class Submarine : MonoBehaviour {
         }
         else if (!tubeLoaded) //there wasn't a torpedo to start with
         {
-            print("Tube " + n + " is empty. Please reload\n"); //TODO - does this curcumstance indicate an error in the coursework? i.e. should I remove this?
+            print("Tube " + n + " is empty. Please reload\n"); //TODO - does this circumstance indicate an error in the coursework? i.e. should I remove this?
         }
         else if (output) //there's still a torpedo there
         {
@@ -403,6 +440,23 @@ public class Submarine : MonoBehaviour {
         SceneManager.LoadScene("GameOver");
     }
 
+    void UpdateOxygen() {
+        if (transform.position.y != subPos.y && !isPaused && !isSurfacing)
+        {
+            Update_oxygen();
+        }  
+    }
+
+    /*IEnumerator UpdateOxygen()
+    {
+        yield return new WaitForSeconds(3.0f);
+
+        while (true)
+        {
+            if (transform.position.y != subPos.y) { Update_oxygen(); }
+            yield return new WaitForSeconds(3.0f);
+        }
+    }*/
 
     void LoadTorpedo(int n) {
         bool tubeStatus = Check_torpedotube_n(n); //true = the tube is currently loaded
@@ -413,7 +467,7 @@ public class Submarine : MonoBehaviour {
         
         if (tubeStatus) //There is already a torpedo in there so cannot load another
         {
-            print("Tube " + n + " is already loaded. Cannot add another torpedo.\n");//TODO - does this curcumstance indicate an error in the coursework? i.e. should I remove this?
+            print("Tube " + n + " is already loaded. Cannot add another torpedo.\n");//TODO - does this circumstance indicate an error in the coursework? i.e. should I remove this?
         }
         else if (output) //there is a torpedo
         {
@@ -430,6 +484,8 @@ public class Submarine : MonoBehaviour {
     }
 
     void UpdateUI() {
+
+        curSub = Get_sub_stats();
 
         if (Get_innerairlock_pos())
         {
@@ -468,12 +524,27 @@ public class Submarine : MonoBehaviour {
         }
 
 
-        //TODO what are the downsides to updating this project to c# 7? MEans I can use a ternary operator for the above...
+        //TODO what are the downsides to updating this project to c# 7? Means I can use a ternary operator for the above...
         //bool Get_innerairlock_pos() ? InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorClosed : InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorOpen; 
 
         DepthValue.text = curSub.Depth.ToString();
         TempValue.text = curSub.Temp.ToString();
+        if (curSub.Temp < 90)
+        {
+            TempValue.color = Color.white;
+        }
+        else
+        {
+            TempValue.color = Color.red;
+        }
         OxygenValue.text = curSub.Oxygen.ToString();
+        if (curSub.Oxygen > 10) {
+            OxygenValue.color = Color.white;
+        }
+        else
+        {
+            OxygenValue.color = Color.red;
+        }
         FrontSpaceValue.text = curSub.FrontSpace.ToString();
     }
 
