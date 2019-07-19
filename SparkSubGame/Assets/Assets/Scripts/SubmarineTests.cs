@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 
 public class SubmarineTests : MonoBehaviour
 {
