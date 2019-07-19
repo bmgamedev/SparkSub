@@ -6,9 +6,10 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEditor.Animations;
 
-public class Submarine : MonoBehaviour {
+public class SubmarineTests : MonoBehaviour
+{
 
-    #region "Var set-up"
+    #region
 
     //SPARK functions
     [DllImport("submarine")]
@@ -83,16 +84,16 @@ public class Submarine : MonoBehaviour {
         public byte EmergencyStatus;
         public byte FrontSpace;
 
-		public bool InnerAirlockPos; 
-		public bool InnerAirlockLock; 
-		public bool OuterAirlockPos;
-		public bool OuterAirlockLock; 
+        public bool InnerAirlockPos;
+        public bool InnerAirlockLock;
+        public bool OuterAirlockPos;
+        public bool OuterAirlockLock;
 
-		public byte FiringArray; 
-		public byte AmmoSilo; 
+        public byte FiringArray;
+        public byte AmmoSilo;
     }
 
-	[DllImport("submarine")]
+    [DllImport("submarine")]
     private static extern Sub Get_sub_stats();
 
     //Sub specific variables
@@ -120,10 +121,13 @@ public class Submarine : MonoBehaviour {
     Sprite DoorOpen, DoorClosed, DoorUnlocked, DoorLocked;
     GameObject[] TorpedoTubes;
     GameObject[] Torpedos;
-    //GameObject InDoorPos, InDoorLock, OutDoorPos, OutDoorLock;
-    SpriteRenderer InDoorPosSprite, OutDoorPosSprite, InDoorLockSprite, OutDoorLockSprite;
+    GameObject InDoorPos, InDoorLock, OutDoorPos, OutDoorLock;
 
     #endregion
+
+    //TESTING
+    //TODO remove once not needed
+    bool isEmergency = false;
 
     void Awake()
     {
@@ -137,16 +141,10 @@ public class Submarine : MonoBehaviour {
         DoorLocked = Resources.Load<Sprite>("UI_3");
 
         //Door indicator GameObjects
-        /*InDoorPos = GameObject.Find("InDoorPos");
+        InDoorPos = GameObject.Find("InDoorPos");
         InDoorLock = GameObject.Find("InDoorLock");
         OutDoorPos = GameObject.Find("OutDoorPos");
-        OutDoorLock = GameObject.Find("OutDoorLock");*/
-
-        //Door sprite renderer components
-        InDoorPosSprite = GameObject.Find("InDoorPos").GetComponent<SpriteRenderer>();
-        OutDoorPosSprite = GameObject.Find("OutDoorPos").GetComponent<SpriteRenderer>();
-        InDoorLockSprite = GameObject.Find("InDoorLock").GetComponent<SpriteRenderer>();
-        OutDoorLockSprite = GameObject.Find("OutDoorLock").GetComponent<SpriteRenderer>();
+        OutDoorLock = GameObject.Find("OutDoorLock");
 
         //Text objects to show the sub stats
         DepthValue = GameObject.Find("DepthVal").GetComponent<Text>();
@@ -166,7 +164,7 @@ public class Submarine : MonoBehaviour {
         Torpedos = new GameObject[25];
         for (int i = 0; i < Torpedos.Length; i++)
         {
-            Torpedos[i] = GameObject.Find("Torpedo" + (i+1));
+            Torpedos[i] = GameObject.Find("Torpedo" + (i + 1));
         }
 
         //Pause screen
@@ -182,7 +180,6 @@ public class Submarine : MonoBehaviour {
         WarningBox.GetComponent<Canvas>().sortingOrder = 0;
         //hasWarning = false;
 
-
         //Animations
         animator = GetComponent<Animator>();
 
@@ -191,24 +188,19 @@ public class Submarine : MonoBehaviour {
 
         //Set Up
         ResetSub();
-
-        prevSub = UpdateSub(prevSub);
-        curSub = UpdateSub(curSub);
-
-        //curSub = Get_sub_stats();
-        //UpdateDoors();
+        curSub = Get_sub_stats();
+        UpdateDoors();
         isAlive = true;
         isReady = false;
         isSurfacing = false;
-
         UpdateUI();
 
         //reduce the oxygen steadily
-        //StartCoroutine("UpdateOxygen");
-        InvokeRepeating("UpdateOxygen", 3.0f,3.0f);
+        InvokeRepeating("UpdateOxygen", 3.0f, 3.0f); 
     }
 
-    void ResetSub() {
+    void ResetSub()
+    {
         curTorpedo = 25;
         Sub_reset();
         transform.position = subPos;
@@ -222,33 +214,35 @@ public class Submarine : MonoBehaviour {
         }
     }
 
-    void UpdateDoors() {
+    void UpdateDoors()
+    {
         curSub.InnerAirlockPos = Get_innerairlock_pos();
         curSub.InnerAirlockLock = Get_innerairlock_lock();
         curSub.OuterAirlockPos = Get_outerairlock_pos();
         curSub.OuterAirlockLock = Get_outerairlock_lock();
     }
 
-    void Update () {
+    void Update()
+    {
+        //print("emergency sub stat: " + curSub.EmergencyStatus);
 
-        prevSub = UpdateSub(prevSub);
-        //prevSub = Get_sub_stats();
+        prevSub = Get_sub_stats();
 
-        //Check sub readiness
         if (!Get_innerairlock_pos() || !Get_innerairlock_lock() || !Get_outerairlock_pos() || !Get_outerairlock_lock())
         {
             isReady = false;
-            
+
         }
-        else {
+        else
+        {
             isReady = true;
         }
-
         animator.SetBool("isReady", isReady);
         animator.SetBool("isAlive", isAlive);
 
         //check for emergency surface
-        if (Check_emergency())
+        if (isEmergency)
+        //if (Check_emergency())
         {
             if (curSub.Temp < 100 && curSub.Oxygen > 0)
             {
@@ -258,7 +252,7 @@ public class Submarine : MonoBehaviour {
 
             if (transform.position.y != subPos.y)
             {
-                //print("pos is: " + transform.position.y + ", should be: " + subPos.y);
+                print("pos is: " + transform.position.y + ", should be: " + subPos.y);
                 isSurfacing = true;
                 transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, subPos.y), 1.0f * Time.deltaTime);
             }
@@ -282,7 +276,6 @@ public class Submarine : MonoBehaviour {
             }
         }
 
-
         //Do some sub stuff
         if (!isPaused && isAlive && !isSurfacing)
         {
@@ -303,8 +296,7 @@ public class Submarine : MonoBehaviour {
 
                 //ACTUAL FUNCTION
                 Sub_go_back();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
+                curSub = Get_sub_stats();
 
                 if (curSub.FrontSpace > 100)
                 {
@@ -330,8 +322,7 @@ public class Submarine : MonoBehaviour {
 
                 //ACTUAL FUNCTION
                 Sub_go_forward();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
+                curSub = Get_sub_stats();
 
                 //FrontSpace has changed from 0 but not decreased - this should indicate it has incorrectly moved further right
                 //which should result in a value of 255 since it's stored in a byte
@@ -357,8 +348,7 @@ public class Submarine : MonoBehaviour {
 
                 //ACTUAL FUNCTION
                 Sub_dive();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
+                curSub = Get_sub_stats();
 
                 if (curSub.Depth > 100)
                 {
@@ -385,8 +375,7 @@ public class Submarine : MonoBehaviour {
 
                 //ACTUAL FUNCTION
                 Sub_surface();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
+                curSub = Get_sub_stats();
 
                 //Depth has changed from 0 but not decreased - this should indicate it has incorrectly surfaced further
                 //which should result in a value of 255 since it's stored in a byte
@@ -424,11 +413,11 @@ public class Submarine : MonoBehaviour {
                 curSub.InnerAirlockPos = true;
                 prevSub.InnerAirlockPos = false;*/
 
-                //ACTUAL FUNCTION - toggle inner door po
+                //ACTUAL FUNCTION
+                //print("toggle inner door pos\n");
                 Close_inner_door();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
-                //UpdateDoors();
+                curSub = Get_sub_stats();
+                UpdateDoors();
 
                 //if new door pos = open AND other door pos = open -> death
                 if (curSub.InnerAirlockPos == false && curSub.OuterAirlockPos == false)
@@ -453,12 +442,6 @@ public class Submarine : MonoBehaviour {
                 {
                     audioSource.PlayOneShot(doorSFX);
                 }
-                //door correctly hasn't changed
-                else if (curSub.InnerAirlockPos == prevSub.InnerAirlockPos && curSub.InnerAirlockLock == true)
-                {
-                    //TODO audioSource.PlayOneShot(dudSFX);?
-                    //Other than that, do nothing because it's correct behaviour
-                }
                 //something other than the expected scenarios has happened - will need to be investigated
                 else
                 {
@@ -475,9 +458,8 @@ public class Submarine : MonoBehaviour {
                 //ACTUAL FUNCTION
                 //print("toggle inner door lock\n");
                 Lock_inner_door();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
-                //UpdateDoors();
+                curSub = Get_sub_stats();
+                UpdateDoors();
 
                 //The lock hasn't changed. 
                 //Can't differentiate between deliberate or erroneous so using a generic warning
@@ -487,7 +469,7 @@ public class Submarine : MonoBehaviour {
                     //TODO play dud sound
                 }
                 //everything is fine
-                else if (curSub.InnerAirlockLock != prevSub.InnerAirlockLock) 
+                else if (curSub.InnerAirlockLock != prevSub.InnerAirlockLock)
                 {
                     audioSource.PlayOneShot(doorSFX);
                 }
@@ -517,12 +499,11 @@ public class Submarine : MonoBehaviour {
                 //ACTUAL FUNCTION
                 //print("toggle outer door pos\n");
                 Close_outer_door();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
-                //UpdateDoors();
+                curSub = Get_sub_stats();
+                UpdateDoors();
 
                 //if new door pos = open AND other door pos = open - death
-                if (curSub.InnerAirlockPos == false && curSub.OuterAirlockPos == false)
+                if (curSub.OuterAirlockPos == false && curSub.OuterAirlockPos == false)
                 {
                     audioSource.PlayOneShot(doorSFX);
                     PlayerPrefs.SetString("PlayerDeath", "Both doors have been opened, flooding the sub.");
@@ -543,12 +524,6 @@ public class Submarine : MonoBehaviour {
                 {
                     audioSource.PlayOneShot(doorSFX);
                 }
-                //door correctly hasn't changed
-                else if (curSub.OuterAirlockPos == prevSub.OuterAirlockPos && curSub.OuterAirlockLock == true)
-                {
-                    //TODO audioSource.PlayOneShot(dudSFX);?
-                    //Other than that, do nothing because it's correct behaviour
-                }
                 //something other than the expected scenarios has happened - will need to be investigated
                 else
                 {
@@ -565,9 +540,8 @@ public class Submarine : MonoBehaviour {
                 //ACTUAL FUNCTION
                 //print("toggle outer door lock\n");
                 Lock_outer_door();
-                curSub = UpdateSub(curSub);
-                //curSub = Get_sub_stats();
-                //UpdateDoors();
+                curSub = Get_sub_stats();
+                UpdateDoors();
 
                 //The lock hasn't changed. 
                 //Can't differentiate between deliberate or erroneous so using a generic warning
@@ -578,7 +552,7 @@ public class Submarine : MonoBehaviour {
                     //audioSource.PlayOneShot(DudSFX);
                 }
                 //everything is fine
-                else if (curSub.OuterAirlockLock != prevSub.OuterAirlockLock) 
+                else if (curSub.OuterAirlockLock != prevSub.OuterAirlockLock)
                 {
                     audioSource.PlayOneShot(doorSFX);
                 }
@@ -627,8 +601,8 @@ public class Submarine : MonoBehaviour {
         }
 
         // FOR TESTING PURPOSES 
-        //TODO delete once finished
-        if (Input.GetKeyUp(KeyCode.T)) {
+        if (Input.GetKeyUp(KeyCode.T))
+        {
             //Vector3 targetPos = transform.position - new Vector3(0.0f, 2.5f, 0.0f);
             //StartCoroutine(TriggerImplosion(targetPos));
             //StartCoroutine(TriggerImplosion());
@@ -637,15 +611,18 @@ public class Submarine : MonoBehaviour {
 
             //isSurfacing = true;
 
+
+
+
             //Test: min oxy, no emergency
             //Just needed to keep the oxy counter running and ensure emergency check remained false
 
             //Test: max temp, no emergency
-            /*curSub.Temp = 100;*/
+            curSub.Temp = 100;
             //And comment out the curSub update in UpdateUI
 
-            // Test: unneeded emergency
-            /*curSub.Temp = 50;
+            /*// Test: unneeded emergency
+            curSub.Temp = 50;
             curSub.Oxygen = 50;
             isEmergency = true;*/
         }
@@ -711,19 +688,21 @@ public class Submarine : MonoBehaviour {
             StartCoroutine(TriggerExplosion());
         }
 
-        if (wasFired) {
+        if (wasFired)
+        {
             Instantiate(Resources.Load("TorpedoPrefab"), transform.GetChild(0).transform.position, Quaternion.identity);
             wasFired = false;
         }
     }
 
-    void LoadTorpedo(int n) {
+    void LoadTorpedo(int n)
+    {
         bool tubeStatus = Check_torpedotube_n(n); //true = the tube is currently loaded
 
         Load_torpedotube_n(n);
 
         bool output = Check_torpedotube_n(n);
-        
+
         if (tubeStatus) //There is already a torpedo in there so cannot load another
         {
             //print("Tube " + n + " is already loaded. Cannot add another torpedo.\n"); //TODO play dud noise
@@ -733,7 +712,7 @@ public class Submarine : MonoBehaviour {
             audioSource.PlayOneShot(reloadSFX);
             print("Tube " + n + " is Loaded\n");
             TorpedoTubes[n - 1].SetActive(true);
-            Torpedos[curTorpedo-1].SetActive(false);
+            Torpedos[curTorpedo - 1].SetActive(false);
             curTorpedo--;
         }
         else if (!output) //there is no torpedo
@@ -774,13 +753,6 @@ public class Submarine : MonoBehaviour {
         SceneManager.LoadScene("GameOver");
     }
 
-    IEnumerator TriggerFlyAway()
-    {
-        //TODO Fly sub away
-        yield return new WaitForSeconds(2.5f);
-        SceneManager.LoadScene("GameOver");
-    }
-
     void UpdateOxygen()
     {
         if (transform.position.y != subPos.y && !isPaused && !isSurfacing)
@@ -789,54 +761,44 @@ public class Submarine : MonoBehaviour {
         }
     }
 
-    void UpdateUI() {
+    void UpdateUI()
+    {
+        curSub = Get_sub_stats();
 
-        //curSub = Get_sub_stats(); //TODO do I need this?!
-        //UpdateDoors();
-        curSub = UpdateSub(curSub);
-
-        if (curSub.InnerAirlockPos)
+        if (Get_innerairlock_pos())
         {
-            //InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorClosed;
-            InDoorPosSprite.sprite = DoorClosed;
+            InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorClosed;
         }
         else
         {
-            //InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorOpen;
-            InDoorPosSprite.sprite = DoorOpen;
+            InDoorPos.GetComponent<SpriteRenderer>().sprite = DoorOpen;
         }
 
         if (Get_outerairlock_pos())
         {
-            //OutDoorPos.GetComponent<SpriteRenderer>().sprite = DoorClosed;
-            OutDoorPosSprite.sprite = DoorClosed;
+            OutDoorPos.GetComponent<SpriteRenderer>().sprite = DoorClosed;
         }
         else
         {
-            //OutDoorPos.GetComponent<SpriteRenderer>().sprite = DoorOpen;
-            OutDoorPosSprite.sprite = DoorOpen;
+            OutDoorPos.GetComponent<SpriteRenderer>().sprite = DoorOpen;
         }
 
         if (Get_innerairlock_lock())
         {
-            //InDoorLock.GetComponent<SpriteRenderer>().sprite = DoorLocked;
-            InDoorLockSprite.sprite = DoorLocked;
+            InDoorLock.GetComponent<SpriteRenderer>().sprite = DoorLocked;
         }
         else
         {
-            //InDoorLock.GetComponent<SpriteRenderer>().sprite = DoorUnlocked;
-            InDoorLockSprite.sprite = DoorUnlocked;
+            InDoorLock.GetComponent<SpriteRenderer>().sprite = DoorUnlocked;
         }
 
         if (Get_outerairlock_lock())
         {
-            //OutDoorLock.GetComponent<SpriteRenderer>().sprite = DoorLocked;
-            OutDoorLockSprite.sprite = DoorLocked;
+            OutDoorLock.GetComponent<SpriteRenderer>().sprite = DoorLocked;
         }
         else
         {
-            //OutDoorLock.GetComponent<SpriteRenderer>().sprite = DoorUnlocked;
-            OutDoorLockSprite.sprite = DoorUnlocked;
+            OutDoorLock.GetComponent<SpriteRenderer>().sprite = DoorUnlocked;
         }
 
 
@@ -854,7 +816,8 @@ public class Submarine : MonoBehaviour {
             TempValue.color = Color.red;
         }
         OxygenValue.text = curSub.Oxygen.ToString();
-        if (curSub.Oxygen > 10) {
+        if (curSub.Oxygen > 10)
+        {
             OxygenValue.color = Color.white;
         }
         else
@@ -864,14 +827,4 @@ public class Submarine : MonoBehaviour {
         FrontSpaceValue.text = curSub.FrontSpace.ToString();
     }
 
-    Sub UpdateSub(Sub targetSub)
-    {
-        targetSub = Get_sub_stats();
-        targetSub.InnerAirlockPos = Get_innerairlock_pos();
-        targetSub.InnerAirlockLock = Get_innerairlock_lock();
-        targetSub.OuterAirlockPos = Get_outerairlock_pos();
-        targetSub.OuterAirlockLock = Get_outerairlock_lock();
-
-        return targetSub;
-    }
 }
