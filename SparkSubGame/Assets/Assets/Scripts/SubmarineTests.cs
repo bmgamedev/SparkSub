@@ -646,6 +646,8 @@ public class SubmarineTests : MonoBehaviour
             }
         }
 
+        
+
         UpdateUI();
     }
 

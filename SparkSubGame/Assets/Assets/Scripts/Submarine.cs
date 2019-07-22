@@ -669,6 +669,11 @@ public class Submarine : MonoBehaviour {
             }
         }
 
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         UpdateUI();
     }
 

@@ -45,6 +45,11 @@ public class Button : MonoBehaviour, ISelectHandler, IDeselectHandler //ISelectH
         SceneManager.LoadScene("Controls");
     }
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     public void OnSelect(BaseEventData eventData)
     {
         gameObject.GetComponent<Text>().text = "> " + name + " <";
@@ -53,6 +58,6 @@ public class Button : MonoBehaviour, ISelectHandler, IDeselectHandler //ISelectH
     public void OnDeselect(BaseEventData eventData)
     {
         gameObject.GetComponent<Text>().text = name;
-    }
+    } 
 
 }
