@@ -8774,6 +8774,7 @@ MonoBehaviour:
   torpedoSFX: {fileID: 8300000, guid: fa26ca3f619d9ff449bfcc2161ebd4ea, type: 3}
   implosionSFX: {fileID: 8300000, guid: 0995f08b6a482434caad61af5ee076a1, type: 3}
   reloadSFX: {fileID: 8300000, guid: e7ba253309c3a5142a4e27ccb9e8915a, type: 3}
+  dudSFX: {fileID: 8300000, guid: 38f2f63623cbffd4f94e1637e8e0769c, type: 3}
   isAlive: 0
   isReady: 0
   isSurfacing: 0
@@ -10974,6 +10975,7 @@ MonoBehaviour:
   torpedoSFX: {fileID: 0}
   implosionSFX: {fileID: 0}
   reloadSFX: {fileID: 0}
+  dudSFX: {fileID: 0}
   isAlive: 0
   isReady: 0
   isSurfacing: 0

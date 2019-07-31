@@ -99,7 +99,7 @@ public class Submarine : MonoBehaviour {
     Sub curSub, prevSub;
     private Animator animator;
     AudioSource audioSource;
-    public AudioClip doorSFX, torpedoSFX, implosionSFX, reloadSFX;
+    public AudioClip doorSFX, torpedoSFX, implosionSFX, reloadSFX, dudSFX;
     Vector3 subPos = new Vector3(-24.66f, 2.88f, 0.0f);
     int curTorpedo = 25, safeDist = 15; //TODO should come from the SPARK coursework in case it changes 
     public bool isAlive, isReady, isSurfacing;
@@ -252,13 +252,11 @@ public class Submarine : MonoBehaviour {
         {
             if (curSub.Temp < 100 && curSub.Oxygen > 0)
             {
-                //TODO dud noise?
                 StartCoroutine(ShowWarning("The emergency surface procedure has been triggered unnecessarily"));
             }
 
             if (transform.position.y != subPos.y)
             {
-                //print("pos is: " + transform.position.y + ", should be: " + subPos.y);
                 isSurfacing = true;
                 transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, subPos.y), 1.0f * Time.deltaTime);
             }
@@ -440,7 +438,7 @@ public class Submarine : MonoBehaviour {
                 //if prev door pos == new door pos AND the door is unlocked, toggle didn't work
                 else if (curSub.InnerAirlockPos == prevSub.InnerAirlockPos && curSub.InnerAirlockLock == false)
                 {
-                    //TODO dud noise
+                    audioSource.PlayOneShot(dudSFX);
                     StartCoroutine(ShowWarning("The inner door failed to open/close."));
                 }
                 //if prev door pos != new door pos BUT door = locked
@@ -456,7 +454,7 @@ public class Submarine : MonoBehaviour {
                 //door correctly hasn't changed
                 else if (curSub.InnerAirlockPos == prevSub.InnerAirlockPos && curSub.InnerAirlockLock == true)
                 {
-                    //TODO audioSource.PlayOneShot(dudSFX);?
+                    audioSource.PlayOneShot(dudSFX);
                     //Other than that, do nothing because it's correct behaviour
                 }
                 //something other than the expected scenarios has happened - will need to be investigated
@@ -484,7 +482,7 @@ public class Submarine : MonoBehaviour {
                 if (curSub.InnerAirlockLock == prevSub.InnerAirlockLock)
                 {
                     StartCoroutine(ShowWarning("The inner lock hasn't changed"));
-                    //TODO play dud sound
+                    audioSource.PlayOneShot(dudSFX);
                 }
                 //everything is fine
                 else if (curSub.InnerAirlockLock != prevSub.InnerAirlockLock) 
@@ -546,7 +544,7 @@ public class Submarine : MonoBehaviour {
                 //door correctly hasn't changed
                 else if (curSub.OuterAirlockPos == prevSub.OuterAirlockPos && curSub.OuterAirlockLock == true)
                 {
-                    //TODO audioSource.PlayOneShot(dudSFX);?
+                    audioSource.PlayOneShot(dudSFX);
                     //Other than that, do nothing because it's correct behaviour
                 }
                 //something other than the expected scenarios has happened - will need to be investigated
@@ -574,8 +572,7 @@ public class Submarine : MonoBehaviour {
                 if (curSub.OuterAirlockLock == prevSub.OuterAirlockLock)
                 {
                     StartCoroutine(ShowWarning("The outer lock hasn't changed"));
-                    //TODO play dud sound
-                    //audioSource.PlayOneShot(DudSFX);
+                    audioSource.PlayOneShot(dudSFX);
                 }
                 //everything is fine
                 else if (curSub.OuterAirlockLock != prevSub.OuterAirlockLock) 
@@ -634,6 +631,7 @@ public class Submarine : MonoBehaviour {
             //StartCoroutine(TriggerImplosion());
 
             //StartCoroutine(TriggerExplosion());
+            StartCoroutine(TriggerFlyAway());
 
             //isSurfacing = true;
 
@@ -648,6 +646,8 @@ public class Submarine : MonoBehaviour {
             /*curSub.Temp = 50;
             curSub.Oxygen = 50;
             isEmergency = true;*/
+
+
         }
 
         //pause/unpause
@@ -702,7 +702,7 @@ public class Submarine : MonoBehaviour {
         }
         else if (!tubeLoaded) //there wasn't a torpedo to start with
         {
-            //print("Tube " + n + " is empty. Please reload\n"); //TODO play dud noise
+            audioSource.PlayOneShot(dudSFX);
         }
         else if (output) //there's still a torpedo there
         {
@@ -743,7 +743,8 @@ public class Submarine : MonoBehaviour {
         }
         else if (!output) //there is no torpedo
         {
-            print("Something went wrong. Tube " + n + " is Empty \n"); //TODO play dud noise
+            print("Something went wrong. Tube " + n + " is Empty \n");
+            audioSource.PlayOneShot(dudSFX);
         }
     }
 
@@ -781,8 +782,17 @@ public class Submarine : MonoBehaviour {
 
     IEnumerator TriggerFlyAway()
     {
-        //TODO Fly sub away
-        yield return new WaitForSeconds(2.5f);
+        Vector3 targetPos = transform.position - new Vector3(-2.0f, -4.0f, 0.0f);
+        yield return new WaitForSeconds(0.35f);
+        float dist = Vector3.Distance(transform.position, targetPos);
+
+        while (dist > 0.5f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, transform.position - new Vector3(-5.0f, -10.0f, 0.0f), 0.07f);
+            dist = Vector3.Distance(transform.position, targetPos);
+            yield return new WaitForSeconds(0.1f);
+        }
+
         SceneManager.LoadScene("GameOver");
     }
 

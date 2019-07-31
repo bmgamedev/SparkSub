@@ -8,8 +8,8 @@
 # show up in a few places.
 # All the other settings can be tweaked by editing the !defines at the top of this script
 !define APPNAME "SPARKSubmarine"
-!define COMPANYNAME "ZuperZpecialZPARKZub_Demo"
-!define DESCRIPTION "Game Interface for SPARK Submarine program - Release version"
+!define COMPANYNAME "SET10112"
+!define DESCRIPTION "Game Interface for SPARK Submarine Coursework - Release Version"
 # These three must be integers
 !define VERSIONMAJOR 1
 !define VERSIONMINOR 1

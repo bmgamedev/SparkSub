@@ -20,8 +20,8 @@ U game_loop%b		game_loop.adb		4ee0e898 NE OO PK
 U game_loop%s		game_loop.ads		3a3dfe3f EE NE OO PK
 W submarine%s		submarine.adb		submarine.ali
 
-D game_loop.ads		20190713210854 d4bea2e3 game_loop%s
-D game_loop.adb		20190713210820 9a5e4a7b game_loop%b
+D game_loop.ads		20190713214132 d4bea2e3 game_loop%s
+D game_loop.adb		20190713214132 9a5e4a7b game_loop%b
 D submarine.ads		20190711121148 ee835cdc submarine%s
 D system.ads		20190518041258 32a08138 system%s
 G a e

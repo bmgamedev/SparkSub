@@ -1,6 +1,3 @@
---with Ada.Real_Time; use Ada.Real_Time;
---with Interfaces; use Interfaces;
-
 package body Game_Loop is
 
    procedure SubDive is
@@ -191,7 +188,6 @@ package body Game_Loop is
          null;
    end StopEmergencySurface;
    
-   --function CheckEmergency return CSharp_Bool is
    function CheckEmergency return Boolean is
    begin
 	 Emergency;

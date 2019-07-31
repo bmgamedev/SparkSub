@@ -104,7 +104,6 @@ package Game_Loop is
 	 Convention => C,
 	 External_Name => "Stop_emergency_surface";
 	 
-   --function CheckEmergency return CSharp_Bool
    function CheckEmergency return Boolean
      with Export,
      Convention => C,
